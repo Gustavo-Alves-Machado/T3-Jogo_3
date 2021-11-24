@@ -16,7 +16,7 @@ Vitória Campos Moreira Tavares – 11761581
 // --------------------------------------- NOME DO JOGUINHO ----------------------------------------
 
 void setup(){
-  size(800,800)
+  size(800,800);
   }
 
 void draw(){ 
