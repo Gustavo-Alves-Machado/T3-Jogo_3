@@ -27,4 +27,10 @@ void draw(){
   
   if (tela == 2){   
   }
+  
+  if (tela == 3){
+  }
+  
+  if (tela == 4){
+  }
 }
