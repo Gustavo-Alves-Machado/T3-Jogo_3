@@ -4,7 +4,7 @@ PCS3021 - Linguagem Computacional
 Prof. Ricardo Nakamura
 Monitor Leonardo Prates Marques
 
-TRABALHO 2 – JOGO DA MEMÓRIA
+TRABALHO FINAL
 
 INTEGRANTES DO GRUPO
 Arthur Siviero da Silva – 11832750
@@ -16,8 +16,9 @@ Vitória Campos Moreira Tavares – 11761581
 // --------------------------------------- NOME DO JOGUINHO ----------------------------------------
 int tela;
 
-void setup(){
+void setup() {
   size(800,800);
+<<<<<<< HEAD
   tela = 1;
   }
 
@@ -25,7 +26,7 @@ void draw(){
   //------------------------------TELA PRINCIPAL---------------------------------
   if (tela == 1){
   }
-  
+
   //------------------------------CONFIGURAÇÕES---------------------------------
   if (tela == 2){   
   }
