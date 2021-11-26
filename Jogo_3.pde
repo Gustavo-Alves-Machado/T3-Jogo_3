@@ -18,7 +18,6 @@ int tela;
 
 void setup() {
   size(800,800);
-<<<<<<< HEAD
   tela = 1;
   }
 
