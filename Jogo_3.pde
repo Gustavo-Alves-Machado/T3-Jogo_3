@@ -15,24 +15,30 @@ Vitória Campos Moreira Tavares – 11761581
 
 // --------------------------------------- NOME DO JOGUINHO ----------------------------------------
 int tela;
-float px_i, py_i, vx_i, vy_i, ax_i, desax_i, largura_i, altura_i;
-float px, py, vx, vx_limite, vy, ax, desax, largura, altura;
+float px_i, py_i, vx_i, ax_i, desax_i, vy_i, g_i, largura_i, altura_i;
+float px, py, vx, vx_limite, ax, desax, vy, g, largura, altura;
+boolean pode_pular;
+PImage sprite;
 
 void setup() {
   size(800,800);
   tela = 6;
 
   // Inicializações padrão do jogador
+  largura_i = 42;
+  altura_i = 60;
   px_i = width/2;
   py_i = height/2;
   vx_i = 7;
-  vy_i = 0;
+  vy_i = 14;
   ax_i = 0.6;
   desax_i = ax_i * 4;
-  largura_i = 75;
-  altura_i = 75;
+  g_i = 0.5;
 
   // Inicializações do jogador
+  sprite = loadImage ("SMWSmallMarioSprite.png");
+  largura = largura_i;
+  altura = altura_i;
   px = px_i;
   py = py_i;
   vx = 0;
@@ -40,8 +46,8 @@ void setup() {
   vy = 0;
   ax = ax_i;
   desax = desax_i;
-  largura = largura_i;
-  altura = altura_i;
+  g = g_i;
+  pode_pular = true;
   }
 
 void draw(){ 
@@ -67,6 +73,13 @@ void draw(){
   
   //----------------------------------O JOGO-----------------------------------
   if (tela == 6){
+    // Impede o personagem de sair da tela por baixo
+    if (py >= height - altura/2) {
+      vy = 0;
+      py = height - altura/2;
+      pode_pular = true;
+    }
+    
     // Move o personagem quando alguma tecla é pressionada
     if (keyPressed == true) {
       // Movimento para a direita
@@ -93,9 +106,16 @@ void draw(){
           vx += -ax;
         }
       }
+      // Movimento de pulo
+      if (key == 'w' || key == 'W') {
+        if (vy == 0 && pode_pular == true) {
+          vy = vy_i;
+          pode_pular = false;
+        }
+      }
     }
     
-    // Desacelera o personagem quando nenhuma tecla está pressionada
+    // Desacelera vx do personagem quando nenhuma tecla está pressionada
     if (keyPressed == false) {
       // Desaceleração quando se move para a direita
       if (vx > 0) {
@@ -116,14 +136,29 @@ void draw(){
         }
       }
     }
-    px += vx;
 
-    // Desenha o personagem e o cenário na tela
-    background (0);
-    fill (255);
-    noStroke ();
-    rectMode (CENTER);
-    rect (px, py, largura, altura);
+  // Ação da gravidade
+  vy -= g;
+
+  // Atualiza a posição do personagem
+  px += vx;
+  py += -vy; // vy é negativo porque y aumenta para baixo no Processing
+
+  // Impede o personagem de sair da tela
+  if (px >= width - largura/2) {
+    px = width - largura/2;
+  }
+  if (px <= largura/2) {
+    px = largura/2;
+  }
+  if (py <= altura/2) {
+    py = altura/2;
+  }
+
+  // Desenha o personagem e o cenário na tela
+  background (235);
+  imageMode (CENTER);
+  image (sprite, px, py, largura, altura);
   }
   
   //--------------------------------GAME OVER-----------------------------------
