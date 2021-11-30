@@ -1,0 +1,18 @@
+class Personagem {
+  
+  
+  
+  
+  
+  Personagem () {
+    
+    
+    
+    
+    
+  }
+  
+  
+  
+  
+}
