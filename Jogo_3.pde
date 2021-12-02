@@ -16,23 +16,11 @@ Vitória Campos Moreira Tavares – 11761581
 // --------------------------------------- NOME DO JOGUINHO ----------------------------------------
 int tela;
 Personagem jogador;
-//float vy_i, g_i;
-//float vy, g;
-//boolean pode_pular;
 
 void setup() {
   size(800,800);
   tela = 6;
   jogador = new Personagem ();
-
-  // Inicializações padrão do jogador
-  //vy_i = 14;
-  //g_i = 0.5;
-
-  // Inicializações do jogador
-  //vy = 0;
-  //g = g_i;
-  //pode_pular = true;
   }
 
 void draw(){ 
@@ -58,93 +46,37 @@ void draw(){
   
   //----------------------------------O JOGO-----------------------------------
   if (tela == 6){
-    background (235);
-    //// Impede o personagem de sair da tela por baixo
-    //if (py >= height - altura/2) {
-    //  vy = 0;
-    //  py = height - altura/2;
-    //  pode_pular = true;
-    //}
+
+    jogador.gravidade();
     
-    // Move o personagem quando alguma tecla é pressionada
+    jogador.dentroDaTela("lado inferior");
+
     if (keyPressed == true) {
       if (jogador.direita()) {
-        //fill (255);
-        //textSize (100);
-        //textAlign (CENTER);
-        //text ("Direita", width/2, 100);
-
         jogador.moveDireita();
       }
       if (jogador.esquerda()) {
-        //fill (255);
-        //textSize (100);
-        //textAlign (CENTER);
-        //text ("Esquerda", width/2, 100);
-
         jogador.moveEsquerda();
       }
       if (jogador.cima()) {
-        //fill (255);
-        //textSize (100);
-        //textAlign (CENTER);
-        //text ("Cima", width/2, 100);
+        jogador.moveCima();
+        jogador.podePular(false);
       }
-
-      // Movimento de pulo
-      //if (key == 'w' || key == 'W') {
-      //  if (vy == 0 && pode_pular == true) {
-      //    vy = vy_i;
-      //    pode_pular = false;
-      //  }
-      //}
     }
     
-    //// Desacelera vx do personagem quando nenhuma tecla está pressionada
     if (keyPressed == false) {
-      jogador.freiaX();
-
-      //// Desaceleração quando se move para a direita
-      //if (vx > 0) {
-      //  if (vx < desax) {
-      //    vx = 0;
-      //  }
-      //  else {
-      //    vx -= desax;
-      //  }
-      //}
-      //// Desaceleração quando se move para a esquerda
-      //if (vx < 0) {
-      //  if (vx > desax) {
-      //    vx = 0;
-      //  }
-      //  else {
-      //    vx -= -desax;
-      //  }
-      //}
+      jogador.freiaVx();
     }
 
-  //// Ação da gravidade
-  //vy -= g;
+    jogador.atualizaPx();
+    jogador.atualizaPy();
 
-  // Atualiza a posição do personagem
-  jogador.atualizaPx();
-  //jogador.atualizaPy();
+    jogador.dentroDaTela("lado direito");
+    jogador.dentroDaTela("lado esquerdo");
+    jogador.dentroDaTela("lado superior");
 
-  //// Impede o personagem de sair da tela
-  //if (px >= width - largura/2) {
-  //  px = width - largura/2;
-  //}
-  //if (px <= largura/2) {
-  //  px = largura/2;
-  //}
-  //if (py <= altura/2) {
-  //  py = altura/2;
-  //}
-
-  //// Desenha o personagem e o cenário na tela
-  //background (235);
-  image (jogador.sprite(), jogador.px(), jogador.py(), jogador.largura(), jogador.altura);
+    background (235);
+    jogador.imagem();
   }
   
   //--------------------------------GAME OVER-----------------------------------

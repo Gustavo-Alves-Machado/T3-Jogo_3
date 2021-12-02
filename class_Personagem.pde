@@ -1,12 +1,19 @@
 class Personagem {
-  float largura_i, altura_i, px_i, py_i, vx_i, ax_i, vx_limite_i, desax_i;
-  float largura,   altura,   px,   py,   vx,   ax,   vx_limite,   desax;
   char t_d_min_i, t_d_mai_i, t_e_min_i, t_e_mai_i, t_c_min_i, t_c_mai_i; // Teclas iniciais de controle
   char t_d_min,   t_d_mai,   t_e_min,   t_e_mai,   t_c_min,   t_c_mai; // Teclas executivas de controle
+  float largura_i, altura_i, px_i, py_i, vx_i, ax_i, vx_limite_i, desax_i, vy_i, g_i;
+  float largura,   altura,   px,   py,   vx,   ax,   vx_limite,   desax,   vy,   g;
+  boolean pode_pular;
   PImage sprite1;
   
   Personagem () {
     // Inicializações padrão
+    t_d_min_i = 'd';
+    t_d_mai_i = 'D';
+    t_e_min_i = 'a';
+    t_e_mai_i = 'A';
+    t_c_min_i = 'w';
+    t_c_mai_i = 'W';
     largura_i = 42;
     altura_i = 60;
     px_i = width/2;
@@ -15,14 +22,16 @@ class Personagem {
     ax_i = 0.6;
     vx_limite_i = 20; // Velocidade em que o jogador para de acelerar
     desax_i = ax_i * 4;
-    t_d_min_i = 'd';
-    t_d_mai_i = 'D';
-    t_e_min_i = 'a';
-    t_e_mai_i = 'A';
-    t_c_min_i = 'w';
-    t_c_mai_i = 'W';
+    vy_i = 14;
+    g_i = 0.5;
 
     // Inicializações executáveis
+    t_d_min = t_d_min_i;
+    t_d_mai = t_d_mai_i;
+    t_e_min = t_e_min_i;
+    t_e_mai = t_e_mai_i;
+    t_c_min = t_c_min_i;
+    t_c_mai = t_c_mai_i;
     largura = largura_i;
     altura = altura_i;
     px = px_i;
@@ -31,12 +40,9 @@ class Personagem {
     ax = ax_i;
     vx_limite = vx_limite_i; // Velocidade em que o jogador para de acelerar
     desax = desax_i;
-    t_d_min = t_d_min_i;
-    t_d_mai = t_d_mai_i;
-    t_e_min = t_e_min_i;
-    t_e_mai = t_e_mai_i;
-    t_c_min = t_c_min_i;
-    t_c_mai = t_c_mai_i;
+    vy = 0;
+    g = g_i;
+    pode_pular = true;
 
     // Inicialização de sprites
     sprite1 = loadImage ("SMWSmallMarioSprite.png");
@@ -82,7 +88,7 @@ class Personagem {
     return pressionada;
   }
 
-  // Muda a posição do personagem
+  // Muda a velocidade do personagem (voluntariamente)
   void moveDireita () {
     if (vx < 0) {
       vx = 0;
@@ -105,16 +111,88 @@ class Personagem {
       vx += -ax;
     }
   }
+  void moveCima () {
+    if (vy == 0 && pode_pular == true) {
+      vy = vy_i;
+    }
+  }
 
-  void freiaX () {
+  // Permite ou desabilita o pulo
+  void podePular (boolean booleana) {
+    pode_pular = booleana;
+  }
+
+  // Muda a velocidade do personagem (involuntariamente)
+  void freiaVx () {
+    if (vx > 0) {
+      if (vx < desax) {
+        vx = 0;
+      }
+      else {
+        vx -= desax;
+      }
+    }
+    // Desaceleração quando se move para a esquerda
+    if (vx < 0) {
+      if (vx > desax) {
+        vx = 0;
+      }
+      else {
+        vx -= -desax;
+      }
+    }
+  }
+  void gravidade () {
+    vy -= g;
+  }
+
+  // Muda a posição do personagem
+  void mudaPx (float x) {
+    px = x;
     vx = 0;
+  }
+  void mudaPy (float y) {
+    py = y;
+    vy = 0;
   }
 
   // Atualiza a posição do personagem
   void atualizaPx () {
     px += vx;
   }
-  //void atualizaPy () {
-  //  py += -vy; // vy é negativo porque y aumenta para baixo no Processing
-  //}
+  void atualizaPy () {
+    py += -vy; // Aqui vy é negativo para facilitar o raciocínio, porque o eixo y normalmente aumenta para baixo no Processing
+  }
+  
+  // Impede o personagem de sair das extremidades da tela.
+  void dentroDaTela (String lado) {
+    if (lado == "lado direito") {
+      if (px >= width - largura/2) {
+        px = width - largura/2;
+      }
+    }
+    if (lado == "lado esquerdo") {
+      if (px <= largura/2) {
+        px = largura/2;
+      }
+    }
+    if (lado == "lado superior") {
+      if (py <= altura/2) {
+        py = altura/2;
+        vy = 0;
+      }
+    }
+    if (lado == "lado inferior") {
+      if (py >= height - altura/2) {
+        vy = 0;
+        pode_pular = true;
+      }
+    }
+  }
+
+  // Desenha o personagem na tela
+  void imagem () {
+    imageMode (CENTER);
+    image (sprite1, px, py, largura, altura);
+  }
 }
