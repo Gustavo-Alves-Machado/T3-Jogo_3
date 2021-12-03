@@ -48,23 +48,6 @@ class Personagem {
     sprite1 = loadImage ("SMWSmallMarioSprite.png");
   }
 
-  // Retorna atributos do personagem
-  float largura () {
-    return largura;
-  }
-  float altura () {
-    return altura;
-  }
-  float px () {
-    return px;
-  }
-  float py () {
-    return py;
-  }
-  PImage sprite () {
-    return sprite1;
-  }
-
   // Verifica quando uma tecla está sendo pressionada
   boolean direita () {
     boolean pressionada = false;
@@ -111,15 +94,10 @@ class Personagem {
       vx += -ax;
     }
   }
-  void moveCima () {
+  void pula () {
     if (vy == 0 && pode_pular == true) {
       vy = vy_i;
     }
-  }
-
-  // Permite ou desabilita o pulo
-  void podePular (boolean booleana) {
-    pode_pular = booleana;
   }
 
   // Muda a velocidade do personagem (involuntariamente)
@@ -145,48 +123,15 @@ class Personagem {
   void gravidade () {
     vy -= g;
   }
-
-  // Muda a posição do personagem
-  void mudaPx (float x) {
-    px = x;
-    vx = 0;
-  }
-  void mudaPy (float y) {
-    py = y;
-    vy = 0;
-  }
-
-  // Atualiza a posição do personagem
-  void atualizaPx () {
-    px += vx;
-  }
-  void atualizaPy () {
-    py += -vy; // Aqui vy é negativo para facilitar o raciocínio, porque o eixo y normalmente aumenta para baixo no Processing
-  }
   
   // Impede o personagem de sair das extremidades da tela.
-  void dentroDaTela (String lado) {
-    if (lado == "lado direito") {
-      if (px >= width - largura/2) {
-        px = width - largura/2;
-      }
+  void colisao (String lado, float p) {
+    if (lado == "lado direito" || lado == "lado esquerdo") {
+      px = p;
     }
-    if (lado == "lado esquerdo") {
-      if (px <= largura/2) {
-        px = largura/2;
-      }
-    }
-    if (lado == "lado superior") {
-      if (py <= altura/2) {
-        py = altura/2;
-        vy = 0;
-      }
-    }
-    if (lado == "lado inferior") {
-      if (py >= height - altura/2) {
-        vy = 0;
-        pode_pular = true;
-      }
+    if (lado == "lado superior" || lado == "lado inferior") {
+      py = p;
+      vy = 0;
     }
   }
 

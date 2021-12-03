@@ -49,7 +49,11 @@ void draw(){
 
     jogador.gravidade();
     
-    jogador.dentroDaTela("lado inferior");
+    // Impede o jogador de sair do lado inferior da tela
+    if (jogador.py >= height - jogador.altura/2) {
+      jogador.colisao ("lado inferior", height - jogador.altura/2);
+      jogador.pode_pular = true;
+    }
 
     if (keyPressed == true) {
       if (jogador.direita()) {
@@ -59,8 +63,8 @@ void draw(){
         jogador.moveEsquerda();
       }
       if (jogador.cima()) {
-        jogador.moveCima();
-        jogador.podePular(false);
+        jogador.pula();
+        jogador.pode_pular = false;
       }
     }
     
@@ -68,12 +72,20 @@ void draw(){
       jogador.freiaVx();
     }
 
-    jogador.atualizaPx();
-    jogador.atualizaPy();
+  // Atualiza a posição do jogador
+    jogador.px += jogador.vx;
+    jogador.py -= jogador.vy; // Aqui vy é subtraído para facilitar o raciocínio, porque o eixo y diminui para cima no Processing
 
-    jogador.dentroDaTela("lado direito");
-    jogador.dentroDaTela("lado esquerdo");
-    jogador.dentroDaTela("lado superior");
+    // Impede o jogador de sair dos outros lados da tela
+    if (jogador.px >= width - jogador.largura/2) {
+      jogador.colisao("lado direito", width - jogador.largura/2);
+    }
+    if (jogador.px <= jogador.largura/2) {
+      jogador.colisao("lado esquerdo", jogador.largura/2);
+    }
+    if (jogador.py <= jogador.altura/2) {
+      jogador.colisao("lado superior", jogador.altura/2);
+    }
 
     background (235);
     jogador.imagem();
