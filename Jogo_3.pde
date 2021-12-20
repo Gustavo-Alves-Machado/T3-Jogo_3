@@ -18,8 +18,17 @@ FAU USP – Design T15 – 2021
 
 import processing.sound.*;
 
-SoundFile audio;
-    
+SoundFile menuMusic;
+boolean estaTocandoMenu = false; //variável utilizada para evitar as repetições dos sons dentro do comando "draw"
+SoundFile jogoMusic;
+boolean estaTocandoJogo = false; //variável utilizada para evitar as repetições dos sons dentro do comando "draw"
+SoundFile selecaoMusic;
+boolean estaTocandoSelecao = false; //variável utilizada para evitar as repetições dos sons dentro do comando "draw"
+SoundFile gameoverMusic;
+boolean estaTocandoGameover= false; //variável utilizada para evitar as repetições dos sons dentro do comando "draw"
+SoundFile vitoriaMusic;
+boolean estaTocandoVitoria= false; //variável utilizada para evitar as repetições dos sons dentro do comando "draw"
+
 float volume, timer, t_inicial, t_passado, t_menu, LarguraBotao, AlturaBotao;
 boolean tocando, inGame, timerOn, ganhou_jogo;
 int tela, dificuldade, botoesDeDificuldadeSelecionados, delayBotao, distancia_nomes_creditos, posicaoY_creditos, vel_creditos, contador_creditos, parte_creditos;
@@ -51,6 +60,14 @@ PImage GameOver;
           image (Selecionado, posicaoX, posicaoY, largura, altura);
           if (mousePressed == true && (mouseButton == LEFT)) { 
             tela = telinha;
+            if( estaTocandoSelecao == false){
+            selecaoMusic.play();
+            jogoMusic.stop();
+            estaTocandoJogo = false ;
+            vitoriaMusic.stop();
+            estaTocandoVitoria = false;
+            gameoverMusic.stop();
+            estaTocandoGameover = false;}
           }
         }
     }
@@ -65,13 +82,27 @@ PImage GameOver;
       //Muda o ícone do timer a depender se ele foi selecionado ou não
       if (timerOn == false){
         image (naoSelecionado, posicaoX, posicaoY, largura, altura);
+        
+      
       }
       if (timerOn == true){
         image (Selecionado, posicaoX, posicaoY, largura, altura);
+     
       }
       
       if (mouseX < posicaoX + largura/2 && mouseX > posicaoX - largura/2 && mouseY < posicaoY + altura/2 && mouseY > posicaoY - altura/2) {
-        if (mousePressed == true && (mouseButton == LEFT)) { 
+        if (mousePressed == true && (mouseButton == LEFT)) {
+          
+         //Configuração dos efeitos sonoros
+         if( estaTocandoSelecao == false){
+         selecaoMusic.play();
+         jogoMusic.stop();
+         estaTocandoJogo = false ;
+         vitoriaMusic.stop();
+         estaTocandoVitoria = false;
+         gameoverMusic.stop();
+         estaTocandoGameover = false;}
+      
           if (timerOn == false && delayBotao == 0){
             timerOn = true;
             delayBotao = 10;
@@ -154,7 +185,16 @@ void setup() {
   Vitoria = loadImage("Vitória.png");
   Logo = loadImage("Logo.png");
   TirinhaLore = loadImage("Lore.png");
+  
+  //Carregamento dos arquivos de som
+  menuMusic = new SoundFile(this, "musicamenu.mp3"); //carrega a trilha de audio de dentro da pasta "data"
+  jogoMusic = new SoundFile(this, "musicajogo.mp3"); //carrega a trilha de audio de dentro da pasta "data"
+  selecaoMusic = new SoundFile(this, "musicaselecao.mp3"); //carrega a trilha de audio de dentro da pasta "data"
+  gameoverMusic = new SoundFile(this, "musicagameover.mp3"); //carrega a trilha de audio de dentro da pasta "data"
+  vitoriaMusic = new SoundFile(this, "musicavitoria.mp3"); //carrega a trilha de audio de dentro da pasta "data"
+  
 }
+
 
 void draw() { 
   
@@ -164,6 +204,19 @@ void draw() {
     image(BGMenu,0,0,width,height);
     imageMode(CENTER);
     image(Logo,width/2-200,height/2,600,600);
+    
+    //Configur~ção dos efeitos sonoros
+    if (tela == 1 && estaTocandoMenu == false) {
+      menuMusic.loop();
+      estaTocandoMenu = true;
+      jogoMusic.stop();
+      estaTocandoJogo = false;
+      selecaoMusic.stop();
+      estaTocandoSelecao= false;
+      vitoriaMusic.stop();
+      estaTocandoVitoria = false;
+      gameoverMusic.stop();
+      estaTocandoGameover = false;}
 
     //Configurações dos botões da tela
     Botao botaoStart = new Botao(BotaoStart, BotaoStartSelecionado, width-260, 250, LarguraBotao, AlturaBotao);
@@ -248,6 +301,18 @@ void draw() {
     inGame = true;
     background(121,130,185);
     
+    //Configur~ção dos efeitos sonoros
+    if (tela == 6 && estaTocandoJogo == false) {
+      jogoMusic.loop();
+      estaTocandoJogo = true;
+      menuMusic.stop();
+      estaTocandoMenu = false;
+      selecaoMusic.stop();
+      estaTocandoSelecao= false;
+      vitoriaMusic.stop();
+      estaTocandoVitoria = false;
+      gameoverMusic.stop();
+      estaTocandoGameover = false;}
    
     t_passado = int((millis() - t_inicial)/1000) - t_menu;
     timer = t_passado;
@@ -272,6 +337,19 @@ void draw() {
     image (BGjogo,0,0,width,height);
     filter(GRAY);
     image (GameOver,0,height/2-290/2,width,290);
+    
+    //Configur~ção dos efeitos sonoros
+    if (tela == 7 && estaTocandoGameover == false) {
+      gameoverMusic.loop();
+      estaTocandoGameover = true;
+      jogoMusic.stop();
+      estaTocandoJogo = false;
+      selecaoMusic.stop();
+      estaTocandoSelecao= false;
+      vitoriaMusic.stop();
+      estaTocandoVitoria = false;
+      menuMusic.stop();
+      estaTocandoMenu = false;}
     
     Botao botaoMenu = new Botao(BotaoMenu, BotaoMenuSelecionado, width/2+200, height/2+300, LarguraBotao, AlturaBotao);
     botaoMenu.criarInteracaoTela(1);
@@ -344,4 +422,16 @@ void draw() {
     Botao botaoMenu = new Botao(BotaoMenu, BotaoMenuSelecionado, width/2, height/2+300, LarguraBotao, AlturaBotao );
     botaoMenu.criarInteracaoTela(1);
   }
+      //Configur~ção dos efeitos sonoros
+    if (tela == 9  && estaTocandoVitoria == false) {
+      vitoriaMusic.loop();
+      estaTocandoVitoria = true;
+      jogoMusic.stop();
+      estaTocandoJogo = false;
+      selecaoMusic.stop();
+      estaTocandoSelecao= false;
+      menuMusic.stop();
+      estaTocandoMenu = false;
+      gameoverMusic.stop();
+      estaTocandoGameover = false;}
 }
