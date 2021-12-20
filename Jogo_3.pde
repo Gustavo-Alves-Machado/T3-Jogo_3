@@ -37,6 +37,8 @@ PImage BotaoStart, BotaoInstrucoes, BotaoX, BotaoConfig, BotaoRetry, BotaoContin
 PImage BotaoStartSelecionado, BotaoInstrucoesSelecionado, BotaoXSelecionado, BotaoConfigSelecionado, BotaoRetrySelecionado, BotaoContinuarSelecionado, BotaoMenuSelecionado, BotaoTimerSelecionado, BotaoCreditosSelecionado;
 PImage BGjogo, BGMenu, BGVitoria, Vitoria, Logo, TirinhaLore, TelaCompiuter; 
 PImage GameOver;
+PImage cafevida;
+int vida = 3;
 
   class Botao {
     float largura, altura, posicaoX, posicaoY;
@@ -189,6 +191,7 @@ void setup() {
   Vitoria = loadImage("Vitória.png");
   Logo = loadImage("Logo.png");
   TirinhaLore = loadImage("Lore.png");
+  cafevida = loadImage ("cafe.png");
   
   //Carregamento dos arquivos de som
   menuMusic = new SoundFile(this, "musicamenu.mp3"); //carrega a trilha de audio de dentro da pasta "data"
@@ -312,6 +315,17 @@ void draw() {
     inGame = true;
     background(121,130,185);
     
+    //Faz com que as imagens de café apareçam na tela
+    for (int i = 0; i < vida; i++)
+    {image(cafevida,80 + i * 80, 80);}
+  
+    //Muda para a tela de Game Over quando acabam-se as vidas
+    if(vida == 0){
+    tela = 7;}
+    
+    //if( Personagem bate em um ladrilho ruim){
+    //vida = vida - 1;}
+    
     //Configur~ção dos efeitos sonoros
     if (tela == 6 && estaTocandoJogo == false) {
       jogoMusic.loop();
@@ -371,6 +385,8 @@ void draw() {
   }
 
   //--------------------------------CRÉDITOS------------------------------------
+ 
+  
   if (tela == 8) {
     if (parte_creditos == 0){
       contador_creditos = contador_creditos + 1;
@@ -388,6 +404,20 @@ void draw() {
     } else {
         vel_creditos = 1;
       }
+      
+      //Configura os efeitos sonoros
+      if (tela == 9  && estaTocandoVitoria == false) {
+      vitoriaMusic.loop();
+      estaTocandoVitoria = true;
+      jogoMusic.stop();
+      estaTocandoJogo = false;
+      selecaoMusic.stop();
+      estaTocandoSelecao= false;
+      menuMusic.stop();
+      estaTocandoMenu = false;
+      gameoverMusic.stop();
+      estaTocandoGameover = false;}
+
    
     //Configura o posicionamento de todas as informações dos créditos
     background(0);
