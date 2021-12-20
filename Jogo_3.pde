@@ -29,10 +29,10 @@ boolean estaTocandoGameover= false; //variável utilizada para evitar as repeti�
 SoundFile vitoriaMusic;
 boolean estaTocandoVitoria= false; //variável utilizada para evitar as repetições dos sons dentro do comando "draw"
 
-float volume, timer, t_inicial, t_passado, t_menu, LarguraBotao, AlturaBotao;
+float volume, timer, t_inicial, t_passado, t_menu, LarguraBotao, AlturaBotao, posicaoSlider, posicaoPontaSlider;
 boolean tocando, inGame, timerOn, ganhou_jogo;
 int tela, dificuldade, botoesDeDificuldadeSelecionados, delayBotao, distancia_nomes_creditos, posicaoY_creditos, vel_creditos, contador_creditos, parte_creditos;
-int LarguraSlider, AlturaSlider, posicaoSlider, posicaoPontaSlider, posicaoYSlider, posicaoXSlider;
+int LarguraSlider, AlturaSlider, posicaoYSlider, posicaoXSlider;
 PImage BotaoStart, BotaoInstrucoes, BotaoX, BotaoConfig, BotaoRetry, BotaoContinuar, BotaoMenu, BotaoTimer, BotaoCreditos, PontaSlider, PortraitSlider, VolumeON, VolumeOFF;
 PImage BotaoStartSelecionado, BotaoInstrucoesSelecionado, BotaoXSelecionado, BotaoConfigSelecionado, BotaoRetrySelecionado, BotaoContinuarSelecionado, BotaoMenuSelecionado, BotaoTimerSelecionado, BotaoCreditosSelecionado;
 PImage BGjogo, BGMenu, BGVitoria, Vitoria, Logo, TirinhaLore, TelaCompiuter; 
@@ -133,6 +133,10 @@ void setup() {
   delayBotao = 0;
   timer = 0;
   
+  //configuração base do volume das músicas
+  volume = 0.5;
+  
+  
   //Configurações base para funcionamento dos créditos
   distancia_nomes_creditos  = 60;
   posicaoY_creditos = height/2;
@@ -198,6 +202,12 @@ void setup() {
 
 void draw() { 
   
+  menuMusic.amp(volume);
+  jogoMusic.amp(volume);
+  selecaoMusic.amp(volume);
+  vitoriaMusic.amp(volume);
+  gameoverMusic.amp(volume);
+  
   //------------------------------TELA PRINCIPAL---------------------------------
   if (tela == 1) {
     imageMode(CORNER);
@@ -248,9 +258,10 @@ void draw() {
           posicaoPontaSlider = mouseX;
         }
       }
-    
+      volume = posicaoSlider/300;
+      
     //Muda o ícone de volume caso o slider atinja 0
-    if(posicaoSlider>1){
+    if(volume>0.015){
       image(VolumeON,  posicaoXSlider - 60, posicaoYSlider + AlturaSlider/2, 70, 70);
     } else {
       image(VolumeOFF, posicaoXSlider - 60, posicaoYSlider + AlturaSlider/2, 70, 70);
