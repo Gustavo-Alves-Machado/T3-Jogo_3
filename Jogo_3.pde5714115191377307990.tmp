@@ -18,8 +18,17 @@ FAU USP – Design T15 – 2021
 
 import processing.sound.*;
 
-SoundFile audio;
-    
+SoundFile menuMusic;
+boolean estaTocandoMenu = false; //variável utilizada para evitar as repetições dos sons dentro do comando "draw"
+SoundFile jogoMusic;
+boolean estaTocandoJogo = false; //variável utilizada para evitar as repetições dos sons dentro do comando "draw"
+SoundFile selecaoMusic;
+boolean estaTocandoSelecao = false; //variável utilizada para evitar as repetições dos sons dentro do comando "draw"
+SoundFile gameoverMusic;
+boolean estaTocandoGameover= false; //variável utilizada para evitar as repetições dos sons dentro do comando "draw"
+SoundFile vitoriaMusic;
+boolean estaTocandoVitoria= false; //variável utilizada para evitar as repetições dos sons dentro do comando "draw"
+
 float volume, timer, t_inicial, t_passado, t_menu, LarguraBotao, AlturaBotao;
 boolean tocando, inGame, timerOn, ganhou_jogo;
 int tela, dificuldade, botoesDeDificuldadeSelecionados, delayBotao, distancia_nomes_creditos, posicaoY_creditos, vel_creditos, contador_creditos, parte_creditos;
@@ -154,7 +163,16 @@ void setup() {
   Vitoria = loadImage("Vitória.png");
   Logo = loadImage("Logo.png");
   TirinhaLore = loadImage("Lore.png");
+  
+  //Carregamento dos arquivos de som
+  menuMusic = new SoundFile(this, "musicamenu.mp3"); //carrega a trilha de audio de dentro da pasta "data"
+  jogoMusic = new SoundFile(this, "musicajogo.mp3"); //carrega a trilha de audio de dentro da pasta "data"
+  selecaoMusic = new SoundFile(this, "musicaselecao.mp3"); //carrega a trilha de audio de dentro da pasta "data"
+  gameoverMusic = new SoundFile(this, "musicagameover.mp3"); //carrega a trilha de audio de dentro da pasta "data"
+  vitoriaMusic = new SoundFile(this, "musicavitoria.mp3"); //carrega a trilha de audio de dentro da pasta "data"
+  
 }
+
 
 void draw() { 
   
@@ -164,6 +182,19 @@ void draw() {
     image(BGMenu,0,0,width,height);
     imageMode(CENTER);
     image(Logo,width/2-200,height/2,600,600);
+    
+    //Configur~ção dos efeitos sonoros
+    if (tela == 1 && estaTocandoMenu == false) {
+      menuMusic.loop();
+      estaTocandoMenu = true;
+      jogoMusic.stop();
+      estaTocandoJogo = false;
+      selecaoMusic.stop();
+      estaTocandoSelecao= false;
+      vitoriaMusic.stop();
+      estaTocandoVitoria = false;
+      gameoverMusic.stop();
+      estaTocandoGameover = false;}
 
     //Configurações dos botões da tela
     Botao botaoStart = new Botao(BotaoStart, BotaoStartSelecionado, width-260, 250, LarguraBotao, AlturaBotao);
