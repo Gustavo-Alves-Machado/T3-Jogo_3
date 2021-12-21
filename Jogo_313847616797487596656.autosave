@@ -17,7 +17,6 @@ FAU USP – Design T15 – 2021
 // --------------------------------------- NOME DO JOGUINHO ----------------------------------------
 
 import processing.sound.*;
-import ptmx.*;
 
 SoundFile menuMusic;
 boolean estaTocandoMenu = false; //variável utilizada para evitar as repetições dos sons dentro do comando "draw"
@@ -30,16 +29,14 @@ boolean estaTocandoGameover= false; //variável utilizada para evitar as repeti�
 SoundFile vitoriaMusic;
 boolean estaTocandoVitoria= false; //variável utilizada para evitar as repetições dos sons dentro do comando "draw"
 
-Ptmx map;
-float volume, timer, t_inicial, t_passado, t_menu, LarguraBotao, AlturaBotao, posicaoSlider, posicaoPontaSlider, tamanhoTecla;
+float volume, timer, t_inicial, t_passado, t_menu, LarguraBotao, AlturaBotao, posicaoSlider, posicaoPontaSlider;
 boolean tocando, inGame, timerOn, ganhou_jogo;
-int tela, dificuldade, botoesDeDificuldadeSelecionados, delayBotao, distancia_nomes_creditos, posicaoY_creditos, vel_creditos, contador_creditos, parte_creditos, frameAtual;
-int LarguraSlider, AlturaSlider, posicaoYSlider, posicaoXSlider, numAnimacao, xMapa, yMapa;
+int tela, dificuldade, botoesDeDificuldadeSelecionados, delayBotao, distancia_nomes_creditos, posicaoY_creditos, vel_creditos, contador_creditos, parte_creditos;
+int LarguraSlider, AlturaSlider, posicaoYSlider, posicaoXSlider;
 PImage BotaoStart, BotaoInstrucoes, BotaoX, BotaoConfig, BotaoRetry, BotaoContinuar, BotaoMenu, BotaoTimer, BotaoCreditos, PontaSlider, PortraitSlider, VolumeON, VolumeOFF;
 PImage BotaoStartSelecionado, BotaoInstrucoesSelecionado, BotaoXSelecionado, BotaoConfigSelecionado, BotaoRetrySelecionado, BotaoContinuarSelecionado, BotaoMenuSelecionado, BotaoTimerSelecionado, BotaoCreditosSelecionado;
-PImage BGjogo, BGMenu, BGVitoria, Logo, TirinhaLore, TirinhaLoreFinal, TelaCompiuter, TeclaA, TeclaASelecionada, TeclaD, TeclaDSelecionada, TeclaW, TeclaWSelecionada; 
-PImage BGGameOver, GameOverFrase, TeclaA1, TeclaD1, TeclaW1, bicho, monstro;
-PImage[] boneco_Esquerda_, boneco_Direita_, Monstro_Esquerda_, Monstro_Direita_;
+PImage BGjogo, BGMenu, BGVitoria, Vitoria, Logo, TirinhaLore, TelaCompiuter; 
+PImage GameOver;
 PImage cafevida;
 int vida = 3;
 
@@ -137,14 +134,9 @@ void setup() {
   timerOn = false;
   delayBotao = 0;
   timer = 0;
-  frameAtual = 0;
-  numAnimacao = 7;
-  map = new Ptmx(this, "Escritório.tmx");
-  xMapa = 0;
-  yMapa = 0;
- 
+  
   //configuração base do volume das músicas
-  volume = 0.1;
+  volume = 0.5;
   
   
   //Configurações base para funcionamento dos créditos
@@ -157,7 +149,6 @@ void setup() {
 
   LarguraBotao = 914/3;
   AlturaBotao = 326/3;
-  tamanhoTecla = 80;
   
   //Configurações base de tamanho e localização do Slider de Volume
   LarguraSlider = 300;
@@ -191,29 +182,15 @@ void setup() {
   VolumeON = loadImage("Volume ON.png");
   VolumeOFF = loadImage("Volume OFF.png");
   
-  //Carregamento de imagens das instruções
-  TeclaA = loadImage("Tecla A.png");
-  TeclaASelecionada = loadImage("Tecla A Selecionada.png");
-  TeclaD = loadImage("Tecla D.png");
-  TeclaDSelecionada = loadImage("Tecla D Selecionada.png");
-  TeclaW = loadImage("Tecla W.png");
-  TeclaWSelecionada = loadImage("Tecla W Selecionada.png");
-  TeclaA1 = TeclaA;
-  TeclaD1 = TeclaD;
-  TeclaW1 = TeclaW;
-  bicho = loadImage("Boneco_Esquerda_0.png");
-  monstro = loadImage("Monstro_Direita_0.png");
-   
   //Carregamento de imagens do jogo
   BGjogo = loadImage("BG.png");
   BGMenu = loadImage("BG menu.png");
   BGVitoria = loadImage("BG Vitória.png"); 
   TelaCompiuter = loadImage("Compiuter.png");
-  BGGameOver = loadImage ("BG Game Over.png");
-  GameOverFrase = loadImage("Frase de morte.png");
+  GameOver = loadImage("Frase de morte.png");
+  Vitoria = loadImage("Vitória.png");
   Logo = loadImage("Logo.png");
   TirinhaLore = loadImage("Lore.png");
-  TirinhaLoreFinal = loadImage("Lore Final.png");
   cafevida = loadImage ("cafe.png");
   
   //Carregamento dos arquivos de som
@@ -223,23 +200,6 @@ void setup() {
   gameoverMusic = new SoundFile(this, "musicagameover.mp3"); //carrega a trilha de audio de dentro da pasta "data"
   vitoriaMusic = new SoundFile(this, "musicavitoria.mp3"); //carrega a trilha de audio de dentro da pasta "data"
   
-  //Carrega imagens individuais das animações do bicho Esquerda e Direita
-  boneco_Esquerda_ = new PImage[numAnimacao];
-  for (int contador = 0; contador < numAnimacao; contador = contador + 1) {
-    String nomeArquivo = "Boneco_Esquerda_" + str(contador) + ".png"; 
-    boneco_Esquerda_[contador] = loadImage(nomeArquivo);
-  }
-  boneco_Direita_ = new PImage[numAnimacao];
-  for (int contador = 0; contador < numAnimacao; contador = contador + 1) {
-    String nomeArquivo = "Boneco_Direita_" + str(contador) + ".png"; 
-    boneco_Direita_[contador] = loadImage(nomeArquivo);
-  }
-  
-  Monstro_Direita_ = new PImage[numAnimacao];
-  for (int contador = 0; contador < numAnimacao; contador = contador + 1) {
-    String nomeArquivo = "Monstro_Direita_" + str(contador) + ".png"; 
-    Monstro_Direita_[contador] = loadImage(nomeArquivo);
-  }
 }
 
 
@@ -256,7 +216,7 @@ void draw() {
     imageMode(CORNER);
     image(BGMenu,0,0,width,height);
     imageMode(CENTER);
-    image(Logo,width/2-250,height/2,566*1.3,284*1.3);
+    image(Logo,width/2-200,height/2,600,600);
     
     //Configur~ção dos efeitos sonoros
     if (tela == 1 && estaTocandoMenu == false) {
@@ -280,8 +240,7 @@ void draw() {
 
     Botao botaoInstrucoes = new Botao(BotaoInstrucoes, BotaoInstrucoesSelecionado, width-260, 550, LarguraBotao, AlturaBotao);
     botaoInstrucoes.criarInteracaoTela(4);
-    
-    
+
   }
   //------------------------------CONFIGURAÇÕES---------------------------------
   if (tela == 2) { 
@@ -291,7 +250,6 @@ void draw() {
     
     //Slider de Volume 
     fill(77,86,206);
-    rectMode(CORNER);
     rect(posicaoXSlider-1, posicaoYSlider+1, posicaoSlider, AlturaSlider-2,30);
     imageMode(CORNER);
     image(PortraitSlider, posicaoXSlider-10, posicaoYSlider, LarguraSlider+20, AlturaSlider);
@@ -303,15 +261,10 @@ void draw() {
           posicaoPontaSlider = mouseX;
         }
       }
-      if (posicaoSlider/300 > 0.01){
       volume = posicaoSlider/300;
-      } else {
-        volume = 0;
-      }
-      
       
     //Muda o ícone de volume caso o slider atinja 0
-    if(volume>0){
+    if(volume>0.015){
       image(VolumeON,  posicaoXSlider - 60, posicaoYSlider + AlturaSlider/2, 70, 70);
     } else {
       image(VolumeOFF, posicaoXSlider - 60, posicaoYSlider + AlturaSlider/2, 70, 70);
@@ -348,46 +301,30 @@ void draw() {
     background(121,130,185);
     imageMode(CENTER);
     image(TelaCompiuter,width/2,height/2,1150*1.04,775*1.04);
-    image(TeclaA1,300,150,tamanhoTecla,tamanhoTecla);
-    image(TeclaD1,400,150,tamanhoTecla,tamanhoTecla);
-    image(TeclaW1,300,height/2-100,tamanhoTecla,tamanhoTecla);
-    image(bicho, 150, 150, 43*1.5, 79*1.5);
-    image(monstro, 150, 600);
 
-    monstro = Monstro_Direita_[frameAtual];
-
-    // Coloca a animação em loop e muda o frame atual a cada 5 contagens do frame rate
-    if (frameCount % 4 == 0) frameAtual = frameAtual+1;
-    if (frameAtual == numAnimacao) frameAtual=0;
-  
     Botao botaoFecharInstrucoes = new Botao(BotaoX, BotaoXSelecionado, width-100, 100, 50, 50);
     botaoFecharInstrucoes.criarInteracaoTela(1);
-    
-    if (keyPressed == true){
-      if (key == 'A' | key == 'a'){
-      TeclaA1 = TeclaASelecionada;
-      bicho = boneco_Esquerda_[frameAtual];
-      }
-      if (key == 'D' | key == 'd'){
-      TeclaD1 = TeclaDSelecionada;
-      bicho = boneco_Direita_[frameAtual];
-      }
-      if (key == 'W' | key == 'w'){
-      TeclaW1 = TeclaWSelecionada;
-      }
-    }
-      else {
-        TeclaD1 = TeclaD;
-        TeclaA1 = TeclaA;
-        TeclaW1 = TeclaW;
-      }
+  }
+
+  //-------------------------------CONTROLES-----------------------------------
+  if (tela == 5) {
   }
 
   //----------------------------------O JOGO-----------------------------------
   if (tela == 6) {
     inGame = true;
-      
-    map.draw(xMapa, yMapa);
+    background(121,130,185);
+    
+    //Faz com que as imagens de café apareçam na tela
+    for (int i = 0; i < vida; i++)
+    {image(cafevida,80 + i * 80, 80);}
+  
+    //Muda para a tela de Game Over quando acabam-se as vidas
+    if(vida == 0){
+    tela = 7;}
+    
+    //if( Personagem bate em um ladrilho ruim){
+    //vida = vida - 1;}
     
     //Configur~ção dos efeitos sonoros
     if (tela == 6 && estaTocandoJogo == false) {
@@ -401,19 +338,6 @@ void draw() {
       estaTocandoVitoria = false;
       gameoverMusic.stop();
       estaTocandoGameover = false;}
-      
-    for (int i = 0; i < vida; i++)
-    {image(cafevida,80 + i * 80, 80);}
-  
-    //Muda para a tela de Game Over quando acabam-se as vidas
-    if(vida == 0){
-    tela = 7;} 
-    
-    if( personagem.py + jogador.altura/2>=height){
-    vida = 0;}
-    
-    //if( Personagem bate em um ladrilho ruim){
-    //vida = vida - 1;}
    
     t_passado = int((millis() - t_inicial)/1000) - t_menu;
     timer = t_passado;
@@ -421,10 +345,8 @@ void draw() {
     if (timerOn == true){
       textAlign (CENTER,TOP);
       textSize (30);
-      fill(20,20,20);
-      rect(width-90,-30,120, 95, 20);
-      fill(255,220,220);
-      text (str(timer), width-45,15);
+      fill(255);
+      text (str(timer), width-50,20);
     }
     
     if (keyPressed == true){
@@ -437,14 +359,10 @@ void draw() {
   //--------------------------------GAME OVER-----------------------------------
   if (tela == 7) {
     imageMode (CORNER);
-    image (BGGameOver,0,0,width,height);
-    rectMode(CENTER);
-    fill (0);
-    rect (width/2, height/2, width, height/4);
+    image (BGjogo,0,0,width,height);
     filter(GRAY);
-    imageMode (CENTER);
-    image (GameOverFrase,width/2,height/2,780,290);
-   
+    image (GameOver,0,height/2-290/2,width,290);
+    
     //Configur~ção dos efeitos sonoros
     if (tela == 7 && estaTocandoGameover == false) {
       gameoverMusic.loop();
@@ -467,6 +385,8 @@ void draw() {
   }
 
   //--------------------------------CRÉDITOS------------------------------------
+ 
+  
   if (tela == 8) {
     if (parte_creditos == 0){
       contador_creditos = contador_creditos + 1;
@@ -484,6 +404,20 @@ void draw() {
     } else {
         vel_creditos = 1;
       }
+      
+      //Configura os efeitos sonoros
+      if (tela == 9  && estaTocandoVitoria == false) {
+      vitoriaMusic.loop();
+      estaTocandoVitoria = true;
+      jogoMusic.stop();
+      estaTocandoJogo = false;
+      selecaoMusic.stop();
+      estaTocandoSelecao= false;
+      menuMusic.stop();
+      estaTocandoMenu = false;
+      gameoverMusic.stop();
+      estaTocandoGameover = false;}
+
    
     //Configura o posicionamento de todas as informações dos créditos
     background(0);
@@ -511,7 +445,6 @@ void draw() {
           contador_creditos = 0;
           parte_creditos = 0;
           posicaoY_creditos = height/2;
-          ganhou_jogo = false;
        } else {
            tela = 2;
            contador_creditos = 0;
@@ -524,15 +457,13 @@ void draw() {
     
   //--------------------------------TELA FINAL-----------------------------------
   if (tela == 9) {
-   background(121,130,185);
+    image(BGVitoria,0,0,width,height);
     imageMode(CENTER);
-    image(TirinhaLoreFinal,width/2,height/2,1150*1.04,775*1.04);
-    Botao botaoContinuarParaJogo = new Botao(BotaoContinuar, BotaoContinuarSelecionado, width/2, height-55, LarguraBotao/2, AlturaBotao/2);
-    botaoContinuarParaJogo.criarInteracaoTela(8);
-    botaoContinuarParaJogo.MexerNoTempo();
-    ganhou_jogo = true;
+    image(Vitoria,width/2,350,800,600);
+    Botao botaoMenu = new Botao(BotaoMenu, BotaoMenuSelecionado, width/2, height/2+300, LarguraBotao, AlturaBotao );
+    botaoMenu.criarInteracaoTela(1);
   }
-      //Configuração dos efeitos sonoros
+      //Configur~ção dos efeitos sonoros
     if (tela == 9  && estaTocandoVitoria == false) {
       vitoriaMusic.loop();
       estaTocandoVitoria = true;
