@@ -35,8 +35,8 @@ int tela, dificuldade, botoesDeDificuldadeSelecionados, delayBotao, distancia_no
 int LarguraSlider, AlturaSlider, posicaoYSlider, posicaoXSlider;
 PImage BotaoStart, BotaoInstrucoes, BotaoX, BotaoConfig, BotaoRetry, BotaoContinuar, BotaoMenu, BotaoTimer, BotaoCreditos, PontaSlider, PortraitSlider, VolumeON, VolumeOFF;
 PImage BotaoStartSelecionado, BotaoInstrucoesSelecionado, BotaoXSelecionado, BotaoConfigSelecionado, BotaoRetrySelecionado, BotaoContinuarSelecionado, BotaoMenuSelecionado, BotaoTimerSelecionado, BotaoCreditosSelecionado;
-PImage BGjogo, BGMenu, BGVitoria, Vitoria, Logo, TirinhaLore, TelaCompiuter; 
-PImage GameOver;
+PImage BGjogo, BGMenu, BGVitoria, Logo, TirinhaLore, TirinhaLoreFinal, TelaCompiuter, TeclaA, TeclaASelecionada, TeclaD, TeclaDSelecionada, TeclaW, TeclaWSelecionada; 
+PImage BGGameOver, GameOverFrase, TeclaA1, TeclaD1, TeclaW1;
 
   class Botao {
     float largura, altura, posicaoX, posicaoY;
@@ -127,7 +127,7 @@ PImage GameOver;
 
 void setup() {
   size(1200, 800);
-  tela = 1;
+  tela = 4;
   inGame = false;
   timerOn = false;
   delayBotao = 0;
@@ -180,15 +180,27 @@ void setup() {
   VolumeON = loadImage("Volume ON.png");
   VolumeOFF = loadImage("Volume OFF.png");
   
+  //Carregamento de imagens das instruções
+  TeclaA = loadImage("Tecla A.png");
+  TeclaASelecionada = loadImage("Tecla A Selecionada.png");
+  TeclaD = loadImage("Tecla D.png");
+  TeclaDSelecionada = loadImage("Tecla D Selecionada.png");
+  TeclaW = loadImage("Tecla W.png");
+  TeclaWSelecionada = loadImage("Tecla W Selecionada.png");
+  TeclaA1 = TeclaA;
+  TeclaD1 = TeclaD;
+  TeclaW1 = TeclaW;
+   
   //Carregamento de imagens do jogo
   BGjogo = loadImage("BG.png");
   BGMenu = loadImage("BG menu.png");
   BGVitoria = loadImage("BG Vitória.png"); 
   TelaCompiuter = loadImage("Compiuter.png");
-  GameOver = loadImage("Frase de morte.png");
-  Vitoria = loadImage("Vitória.png");
+  BGGameOver = loadImage ("BG Game Over.png");
+  GameOverFrase = loadImage("Frase de morte.png");
   Logo = loadImage("Logo.png");
   TirinhaLore = loadImage("Lore.png");
+  TirinhaLoreFinal = loadImage("Lore Final.png");
   
   //Carregamento dos arquivos de som
   menuMusic = new SoundFile(this, "musicamenu.mp3"); //carrega a trilha de audio de dentro da pasta "data"
@@ -247,6 +259,7 @@ void draw() {
     
     //Slider de Volume 
     fill(77,86,206);
+    rectMode(CORNER);
     rect(posicaoXSlider-1, posicaoYSlider+1, posicaoSlider, AlturaSlider-2,30);
     imageMode(CORNER);
     image(PortraitSlider, posicaoXSlider-10, posicaoYSlider, LarguraSlider+20, AlturaSlider);
@@ -298,13 +311,29 @@ void draw() {
     background(121,130,185);
     imageMode(CENTER);
     image(TelaCompiuter,width/2,height/2,1150*1.04,775*1.04);
+    image(TeclaA1,width/2,height/2,150,150);
+    image(TeclaD1,width/2+200,height/2,150,150);
+    image(TeclaW1,width/2+400,height/2,150,150);
 
     Botao botaoFecharInstrucoes = new Botao(BotaoX, BotaoXSelecionado, width-100, 100, 50, 50);
     botaoFecharInstrucoes.criarInteracaoTela(1);
-  }
-
-  //-------------------------------CONTROLES-----------------------------------
-  if (tela == 5) {
+    
+    if (keyPressed == true){
+      if (key == 'A' | key == 'a'){
+      TeclaA1 = TeclaASelecionada;
+      }
+      if (key == 'D' | key == 'd'){
+      TeclaD1 = TeclaDSelecionada;
+      }
+      if (key == 'W' | key == 'w'){
+      TeclaW1 = TeclaWSelecionada;
+      }
+    }
+      else {
+        TeclaD1 = TeclaD;
+        TeclaA1 = TeclaA;
+        TeclaW1 = TeclaW;
+      }
   }
 
   //----------------------------------O JOGO-----------------------------------
@@ -345,10 +374,14 @@ void draw() {
   //--------------------------------GAME OVER-----------------------------------
   if (tela == 7) {
     imageMode (CORNER);
-    image (BGjogo,0,0,width,height);
+    image (BGGameOver,0,0,width,height);
+    rectMode(CENTER);
+    fill (0);
+    rect (width/2, height/2, width, height/4);
     filter(GRAY);
-    image (GameOver,0,height/2-290/2,width,290);
-    
+    imageMode (CENTER);
+    image (GameOverFrase,width/2,height/2,780,290);
+   
     //Configur~ção dos efeitos sonoros
     if (tela == 7 && estaTocandoGameover == false) {
       gameoverMusic.loop();
@@ -415,6 +448,7 @@ void draw() {
           contador_creditos = 0;
           parte_creditos = 0;
           posicaoY_creditos = height/2;
+          ganhou_jogo = false;
        } else {
            tela = 2;
            contador_creditos = 0;
@@ -427,13 +461,15 @@ void draw() {
     
   //--------------------------------TELA FINAL-----------------------------------
   if (tela == 9) {
-    image(BGVitoria,0,0,width,height);
+   background(121,130,185);
     imageMode(CENTER);
-    image(Vitoria,width/2,350,800,600);
-    Botao botaoMenu = new Botao(BotaoMenu, BotaoMenuSelecionado, width/2, height/2+300, LarguraBotao, AlturaBotao );
-    botaoMenu.criarInteracaoTela(1);
+    image(TirinhaLoreFinal,width/2,height/2,1150*1.04,775*1.04);
+    Botao botaoContinuarParaJogo = new Botao(BotaoContinuar, BotaoContinuarSelecionado, width/2, height-55, LarguraBotao/2, AlturaBotao/2);
+    botaoContinuarParaJogo.criarInteracaoTela(8);
+    botaoContinuarParaJogo.MexerNoTempo();
+    ganhou_jogo = true;
   }
-      //Configur~ção dos efeitos sonoros
+      //Configuração dos efeitos sonoros
     if (tela == 9  && estaTocandoVitoria == false) {
       vitoriaMusic.loop();
       estaTocandoVitoria = true;
