@@ -17,6 +17,7 @@ FAU USP – Design T15 – 2021
 // --------------------------------------- NOME DO JOGUINHO ----------------------------------------
 
 import processing.sound.*;
+import ptmx.*;
 
 SoundFile menuMusic;
 boolean estaTocandoMenu = false; //variável utilizada para evitar as repetições dos sons dentro do comando "draw"
@@ -29,14 +30,16 @@ boolean estaTocandoGameover= false; //variável utilizada para evitar as repeti�
 SoundFile vitoriaMusic;
 boolean estaTocandoVitoria= false; //variável utilizada para evitar as repetições dos sons dentro do comando "draw"
 
-float volume, timer, t_inicial, t_passado, t_menu, LarguraBotao, AlturaBotao, posicaoSlider, posicaoPontaSlider;
+Ptmx map;
+float volume, timer, t_inicial, t_passado, t_menu, LarguraBotao, AlturaBotao, posicaoSlider, posicaoPontaSlider, tamanhoTecla;
 boolean tocando, inGame, timerOn, ganhou_jogo;
-int tela, dificuldade, botoesDeDificuldadeSelecionados, delayBotao, distancia_nomes_creditos, posicaoY_creditos, vel_creditos, contador_creditos, parte_creditos;
-int LarguraSlider, AlturaSlider, posicaoYSlider, posicaoXSlider;
+int tela, dificuldade, botoesDeDificuldadeSelecionados, delayBotao, distancia_nomes_creditos, posicaoY_creditos, vel_creditos, contador_creditos, parte_creditos, frameAtual;
+int LarguraSlider, AlturaSlider, posicaoYSlider, posicaoXSlider, numAnimacao, xMapa, yMapa;
 PImage BotaoStart, BotaoInstrucoes, BotaoX, BotaoConfig, BotaoRetry, BotaoContinuar, BotaoMenu, BotaoTimer, BotaoCreditos, PontaSlider, PortraitSlider, VolumeON, VolumeOFF;
 PImage BotaoStartSelecionado, BotaoInstrucoesSelecionado, BotaoXSelecionado, BotaoConfigSelecionado, BotaoRetrySelecionado, BotaoContinuarSelecionado, BotaoMenuSelecionado, BotaoTimerSelecionado, BotaoCreditosSelecionado;
 PImage BGjogo, BGMenu, BGVitoria, Logo, TirinhaLore, TirinhaLoreFinal, TelaCompiuter, TeclaA, TeclaASelecionada, TeclaD, TeclaDSelecionada, TeclaW, TeclaWSelecionada; 
-PImage BGGameOver, GameOverFrase, TeclaA1, TeclaD1, TeclaW1;
+PImage BGGameOver, GameOverFrase, TeclaA1, TeclaD1, TeclaW1, bicho, monstro;
+PImage[] boneco_Esquerda_, boneco_Direita_, Monstro_Esquerda_, Monstro_Direita_;
 
   class Botao {
     float largura, altura, posicaoX, posicaoY;
@@ -127,12 +130,17 @@ PImage BGGameOver, GameOverFrase, TeclaA1, TeclaD1, TeclaW1;
 
 void setup() {
   size(1200, 800);
-  tela = 4;
+  tela = 6;
   inGame = false;
   timerOn = false;
   delayBotao = 0;
   timer = 0;
-  
+  frameAtual = 0;
+  numAnimacao = 7;
+  map = new Ptmx(this, "Escritório.tmx");
+  xMapa = 0;
+  yMapa = 0;
+ 
   //configuração base do volume das músicas
   volume = 0.5;
   
@@ -147,6 +155,7 @@ void setup() {
 
   LarguraBotao = 914/3;
   AlturaBotao = 326/3;
+  tamanhoTecla = 80;
   
   //Configurações base de tamanho e localização do Slider de Volume
   LarguraSlider = 300;
@@ -190,6 +199,8 @@ void setup() {
   TeclaA1 = TeclaA;
   TeclaD1 = TeclaD;
   TeclaW1 = TeclaW;
+  bicho = loadImage("Boneco_Esquerda_0.png");
+  monstro = loadImage("Monstro_Direita_0.png");
    
   //Carregamento de imagens do jogo
   BGjogo = loadImage("BG.png");
@@ -209,6 +220,23 @@ void setup() {
   gameoverMusic = new SoundFile(this, "musicagameover.mp3"); //carrega a trilha de audio de dentro da pasta "data"
   vitoriaMusic = new SoundFile(this, "musicavitoria.mp3"); //carrega a trilha de audio de dentro da pasta "data"
   
+  //Carrega imagens individuais das animações do bicho Esquerda e Direita
+  boneco_Esquerda_ = new PImage[numAnimacao];
+  for (int contador = 0; contador < numAnimacao; contador = contador + 1) {
+    String nomeArquivo = "Boneco_Esquerda_" + str(contador) + ".png"; 
+    boneco_Esquerda_[contador] = loadImage(nomeArquivo);
+  }
+  boneco_Direita_ = new PImage[numAnimacao];
+  for (int contador = 0; contador < numAnimacao; contador = contador + 1) {
+    String nomeArquivo = "Boneco_Direita_" + str(contador) + ".png"; 
+    boneco_Direita_[contador] = loadImage(nomeArquivo);
+  }
+  
+  Monstro_Direita_ = new PImage[numAnimacao];
+  for (int contador = 0; contador < numAnimacao; contador = contador + 1) {
+    String nomeArquivo = "Monstro_Direita_" + str(contador) + ".png"; 
+    Monstro_Direita_[contador] = loadImage(nomeArquivo);
+  }
 }
 
 
@@ -249,7 +277,8 @@ void draw() {
 
     Botao botaoInstrucoes = new Botao(BotaoInstrucoes, BotaoInstrucoesSelecionado, width-260, 550, LarguraBotao, AlturaBotao);
     botaoInstrucoes.criarInteracaoTela(4);
-
+    
+    
   }
   //------------------------------CONFIGURAÇÕES---------------------------------
   if (tela == 2) { 
@@ -311,19 +340,29 @@ void draw() {
     background(121,130,185);
     imageMode(CENTER);
     image(TelaCompiuter,width/2,height/2,1150*1.04,775*1.04);
-    image(TeclaA1,width/2,height/2,150,150);
-    image(TeclaD1,width/2+200,height/2,150,150);
-    image(TeclaW1,width/2+400,height/2,150,150);
+    image(TeclaA1,300,150,tamanhoTecla,tamanhoTecla);
+    image(TeclaD1,400,150,tamanhoTecla,tamanhoTecla);
+    image(TeclaW1,300,height/2-100,tamanhoTecla,tamanhoTecla);
+    image(bicho, 150, 150, 43*1.5, 79*1.5);
+    image(monstro, 150, 600);
 
+    monstro = Monstro_Direita_[frameAtual];
+
+    // Coloca a animação em loop e muda o frame atual a cada 5 contagens do frame rate
+    if (frameCount % 4 == 0) frameAtual = frameAtual+1;
+    if (frameAtual == numAnimacao) frameAtual=0;
+  
     Botao botaoFecharInstrucoes = new Botao(BotaoX, BotaoXSelecionado, width-100, 100, 50, 50);
     botaoFecharInstrucoes.criarInteracaoTela(1);
     
     if (keyPressed == true){
       if (key == 'A' | key == 'a'){
       TeclaA1 = TeclaASelecionada;
+      bicho = boneco_Esquerda_[frameAtual];
       }
       if (key == 'D' | key == 'd'){
       TeclaD1 = TeclaDSelecionada;
+      bicho = boneco_Direita_[frameAtual];
       }
       if (key == 'W' | key == 'w'){
       TeclaW1 = TeclaWSelecionada;
@@ -339,7 +378,9 @@ void draw() {
   //----------------------------------O JOGO-----------------------------------
   if (tela == 6) {
     inGame = true;
-    background(121,130,185);
+    
+    background(map.getBackgroundColor());
+    map.draw(xMapa, yMapa);
     
     //Configur~ção dos efeitos sonoros
     if (tela == 6 && estaTocandoJogo == false) {
