@@ -139,6 +139,7 @@ void setup() {
   size(1200,800);
   tela = 6;
   jogador = new Personagem ();
+  ganhou_jogo = false;
 
   mapa = new Ptmx (this, "Escritório.tmx");
   mapa.setBackgroundMode("NONE");
@@ -152,25 +153,21 @@ void setup() {
   mapa_tamanho [1] *= tile_tamanho [1];
   imageMode(CENTER);
 
-
   inGame = false;
   timerOn = false;
   delayBotao = 0;
   timer = 0;
   frameAtual = 0;
   numAnimacao = 7;
-
  
   //configuração base do volume das músicas
   volume = 0.1;
-  
   
   //Configurações base para funcionamento dos créditos
   distancia_nomes_creditos  = 60;
   posicaoY_creditos = height/2;
   vel_creditos = 1;
   contador_creditos = 0;
-  ganhou_jogo = false;
   parte_creditos = 0;
 
   LarguraBotao = 914/3;
@@ -437,7 +434,7 @@ void draw() {
     tile_colisao_coordenadas = mapa.canvasToMap(round(jogador.px), round(jogador.py + jogador.altura/2)).array();
     switch(mapa.getTileIndex(1, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
       case 0: case 1: case 2: case 17: case 18: case 19: case 20: case 21: case 22:
-        jogador.colisao("vertical", (tile_tamanho [1] * tile_colisao_coordenadas [1]) - tile_tamanho[1]/9); // Não encontrei um py aqui que tornasse a colisão 100% estável
+        jogador.colisao("vertical", (mapa.getTileSize().y * round(tile_colisao_coordenadas [1])) - jogador.altura/2);
         jogador.pode_pular = true;
         break;
       default:
@@ -475,19 +472,19 @@ void draw() {
     tile_colisao_coordenadas = mapa.canvasToMap(round(jogador.px + jogador.largura/2), round(jogador.py)).array();
     switch(mapa.getTileIndex(1, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
        case 0: case 1: case 2: case 17: case 18: case 19: case 20: case 21: case 22:
-        jogador.colisao("horizontal", (tile_tamanho [0] * tile_colisao_coordenadas [0]) - jogador.largura/2);
+        jogador.colisao("horizontal", (mapa.getTileSize().x * round(tile_colisao_coordenadas[0])) - jogador.largura/2);
     }
     // Colisão com plataforma à esquerda
     tile_colisao_coordenadas = mapa.canvasToMap(round(jogador.px - jogador.largura/2), round(jogador.py)).array();
     switch(mapa.getTileIndex(1, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
        case 0: case 1: case 2: case 17: case 18: case 19: case 20: case 21: case 22:
-        jogador.colisao("horizontal", (tile_tamanho [0] * (tile_colisao_coordenadas [0] + 1)) + jogador.largura/2);
+        jogador.colisao("horizontal", (mapa.getTileSize().x * round(tile_colisao_coordenadas [0] + 1)) + jogador.largura/2);
     }
     // Colisão com plataforma acima
     tile_colisao_coordenadas = mapa.canvasToMap(round(jogador.px), round(jogador.py - jogador.altura/2)).array();
     switch(mapa.getTileIndex(1, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
        case 0: case 1: case 2: case 17: case 18: case 19: case 20: case 21: case 22:
-        jogador.colisao("vertical", (tile_tamanho [0] * (tile_colisao_coordenadas [0] + 1)) + jogador.altura/2);
+        jogador.colisao("vertical", (mapa.getTileSize().y * round(tile_colisao_coordenadas [1] + 1)) + jogador.altura/2);
     }
     // Colisão com as extremidades superior e laterais da tela
     if (jogador.px >= mapa_tamanho[0] - jogador.largura/2) {
@@ -498,6 +495,12 @@ void draw() {
     }
     if (jogador.py <= jogador.altura/2) {
       jogador.colisao("vertical", jogador.altura/2);
+    }
+
+    tile_colisao_coordenadas = mapa.canvasToMap(round(jogador.px), round(jogador.py)).array();
+    switch(mapa.getTileIndex(1, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
+      case 16:
+      ganhou_jogo = true;
     }
 
     background (235);

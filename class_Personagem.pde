@@ -102,23 +102,24 @@ class Personagem {
 
   // Muda a velocidade do personagem (involuntariamente)
   void freiaVx () {
-    if (vx > 0) {
-      if (vx < desax) {
-        vx = 0;
-      }
-      else {
-        vx -= desax;
-      }
-    }
-    // Desaceleração quando se move para a esquerda
-    if (vx < 0) {
-      if (vx > desax) {
-        vx = 0;
-      }
-      else {
-        vx -= -desax;
-      }
-    }
+    //if (vx > 0) {
+    //  if (vx < desax) {
+    //    vx = 0;
+    //  }
+    //  else {
+    //    vx -= desax;
+    //  }
+    //}
+    //// Desaceleração quando se move para a esquerda
+    //if (vx < 0) {
+    //  if (vx > desax) {
+    //    vx = 0;
+    //  }
+    //  else {
+    //    vx -= -desax;
+    //  }
+    //}
+    vx = 0; // Decidimos abandonar a desaceleração lateral por dificultar demais o jogo
   }
   void gravidade () {
     vy -= g;
