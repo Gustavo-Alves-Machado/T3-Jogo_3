@@ -137,7 +137,7 @@ Personagem jogador;
   
 void setup() {
   size(1200,800);
-  tela = 4;
+  tela = 6;
   jogador = new Personagem ();
   ganhou_jogo = false;
 
@@ -358,7 +358,7 @@ void draw() {
   }
 
   //-------------------------------INSTRUÇÕES-----------------------------------
-  if (tela == 6) {
+  if (tela == 4) {
     background(121,130,185);
     imageMode(CENTER);
     image(TelaCompiuter,width/2,height/2,1150*1.04,775*1.04);
