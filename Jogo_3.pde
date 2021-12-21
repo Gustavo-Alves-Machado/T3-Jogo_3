@@ -30,7 +30,7 @@ boolean estaTocandoGameover= false; //variável utilizada para evitar as repeti�
 SoundFile vitoriaMusic;
 boolean estaTocandoVitoria= false; //variável utilizada para evitar as repetições dos sons dentro do comando "draw"
 
-float volume, timer, t_inicial, t_passado, t_menu, LarguraBotao, AlturaBotao, posicaoSlider, posicaoPontaSlider, tamanhoTecla;
+float volume, timer, t_inicial, t_passado, t_menu, t_final,LarguraBotao, AlturaBotao, posicaoSlider, posicaoPontaSlider, tamanhoTecla;
 boolean tocando, inGame, timerOn, ganhou_jogo;
 int tela, dificuldade, botoesDeDificuldadeSelecionados, delayBotao, distancia_nomes_creditos, posicaoY_creditos, vel_creditos, contador_creditos, parte_creditos, frameAtual;
 int LarguraSlider, AlturaSlider, posicaoYSlider, posicaoXSlider, numAnimacao, xMapa, yMapa;
@@ -132,6 +132,15 @@ Personagem jogador;
           t_inicial = millis();
         }
       }
+    }
+    
+    void reiniciarJogo(){
+    vida = 3;
+    jogador.px = jogador.px_i;
+    jogador.py = jogador.py_i;
+    px_mapa = width/2;
+    py_mapa = height/2;
+    t_menu = 0;
     }
   }
   
@@ -417,6 +426,9 @@ void draw() {
       gameoverMusic.stop();
       estaTocandoGameover = false;}
       
+      if (frameCount % 4 == 0) frameAtual = frameAtual+1;
+    if (frameAtual == numAnimacao) frameAtual=0;
+    
     for (int i = 0; i < vida; i++)
     {image(cafevida,80 + i * 80, 80);}
   
@@ -424,8 +436,8 @@ void draw() {
     if(vida == 0){
     tela = 7;} 
     
-    //if(jogador.py + jogador.altura/2>=height){
-    //vida = 0;}
+    if(jogador.py + jogador.altura/2>=height){
+    vida = 0;}
     
     //if( Personagem bate em um ladrilho ruim){
     //vida = vida - 1;}
@@ -504,6 +516,8 @@ void draw() {
     switch(mapa.getTileIndex(1, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
       case 16:
       ganhou_jogo = true;
+      tela = 9;
+      t_final = timer;
     }
 
     background (235);
@@ -527,7 +541,7 @@ void draw() {
       }
     }
 
-    // APAGAR - Mostra coordenadas do jogador na tela
+    /*
     fill (0);
     textSize (24);
     text ("px = " + str(round(jogador.px)), 100, 50);
@@ -535,14 +549,17 @@ void draw() {
     text (int(tile_colisao_coordenadas[0]), 200, 50);
     text (int(tile_colisao_coordenadas[1]), 200, 85);
     text ("tipo de bloco: " + str(mapa.getTileIndex(0, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))), 100, 150);
+    */
     
     if (timerOn == true){
       textAlign (CENTER,TOP);
       textSize (30);
       fill(20,20,20);
+      rectMode(CORNER);
       rect(width-90,-30,120, 95, 20);
       fill(255,220,220);
       text (str(timer), width-45,15);
+      rectMode(CENTER);
     }
   }
 
@@ -572,10 +589,12 @@ void draw() {
     
     Botao botaoMenu = new Botao(BotaoMenu, BotaoMenuSelecionado, width/2+200, height/2+300, LarguraBotao, AlturaBotao);
     botaoMenu.criarInteracaoTela(1);
+    botaoMenu.reiniciarJogo();
     
     Botao botaoRetry = new Botao(BotaoRetry, BotaoRetrySelecionado, width/2-200, height/2+300, LarguraBotao, AlturaBotao);
     botaoRetry.criarInteracaoTela(6);
     botaoRetry.MexerNoTempo();
+    botaoRetry.reiniciarJogo();
   }
 
   //--------------------------------CRÉDITOS------------------------------------
@@ -602,15 +621,22 @@ void draw() {
     textAlign (CENTER);
     textSize (60);
     fill(255);
-    text ("NOME DO JOGO" , width/2,posicaoY_creditos - 150);
+    text ("Pra Ontem!" , width/2,posicaoY_creditos - 150);
     textSize (30);
-    text ("Arthur Siviero - Programação, Game design", width/2,posicaoY_creditos);
-    text ("Everton Bela - Arte, Animações", width/2,posicaoY_creditos+distancia_nomes_creditos);
-    text ("Gustavo Machado - Programação, UI design", width/2,posicaoY_creditos+distancia_nomes_creditos*2);
-    text ("Vitoria Campos - Arte, música", width/2,posicaoY_creditos+distancia_nomes_creditos*3);
+    text ("Arthur Siviero - Mêcanicas do personagem, Colisões", width/2,posicaoY_creditos);
+    text ("Everton Bela - Arte, Animações, Logo", width/2,posicaoY_creditos+distancia_nomes_creditos);
+    text ("Gustavo Machado - Menus, Telas extras, Mapa", width/2,posicaoY_creditos+distancia_nomes_creditos*2);
+    text ("Vitoria Campos - Sistema de Morte,Arte, música", width/2,posicaoY_creditos+distancia_nomes_creditos*3);
     textSize (90);
     text ("MUITO OBRIGADO!", width/2,posicaoY_creditos+distancia_nomes_creditos*10.75);
     
+    if (ganhou_jogo==true){
+      if (timerOn == true){
+    textSize (30);
+    text ("seu tempo foi de " + str(t_final) + " segundos", width/2,posicaoY_creditos+distancia_nomes_creditos*12);
+    }
+    }
+      
     if (parte_creditos == 1){
       if (posicaoY_creditos > -200){
         posicaoY_creditos = posicaoY_creditos - vel_creditos;
@@ -642,6 +668,7 @@ void draw() {
     Botao botaoContinuarParaJogo = new Botao(BotaoContinuar, BotaoContinuarSelecionado, width/2, height-55, LarguraBotao/2, AlturaBotao/2);
     botaoContinuarParaJogo.criarInteracaoTela(8);
     botaoContinuarParaJogo.MexerNoTempo();
+    botaoContinuarParaJogo.reiniciarJogo();
     ganhou_jogo = true;
   
       //Configuração dos efeitos sonoros
@@ -659,3 +686,5 @@ void draw() {
 }
   }
   }
+  
+  

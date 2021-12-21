@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.5" tiledversion="1.7.2" name="Tiles Escritório" tilewidth="1200" tileheight="804" tilecount="23" columns="0">
+<tileset version="1.5" tiledversion="1.7.2" name="Tiles Escritório" tilewidth="1200" tileheight="804" tilecount="47" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0">
   <image width="101" height="151" source="Tile 1 - Armário 100 x 150.png"/>
@@ -69,5 +69,77 @@
  </tile>
  <tile id="22">
   <image width="51" height="51" source="Tile 20 - Pontinha armário.png"/>
+ </tile>
+ <tile id="23">
+  <image width="51" height="801" source="Tira 1 .png"/>
+ </tile>
+ <tile id="24">
+  <image width="51" height="801" source="Tira 2.png"/>
+ </tile>
+ <tile id="25">
+  <image width="51" height="801" source="Tira 3.png"/>
+ </tile>
+ <tile id="26">
+  <image width="51" height="801" source="Tira 4.png"/>
+ </tile>
+ <tile id="27">
+  <image width="51" height="801" source="Tira 5.png"/>
+ </tile>
+ <tile id="28">
+  <image width="51" height="801" source="Tira 6.png"/>
+ </tile>
+ <tile id="29">
+  <image width="51" height="801" source="Tira 7.png"/>
+ </tile>
+ <tile id="30">
+  <image width="51" height="801" source="Tira 8.png"/>
+ </tile>
+ <tile id="31">
+  <image width="51" height="801" source="Tira 9.png"/>
+ </tile>
+ <tile id="32">
+  <image width="51" height="801" source="Tira 10.png"/>
+ </tile>
+ <tile id="33">
+  <image width="51" height="801" source="Tira 11.png"/>
+ </tile>
+ <tile id="34">
+  <image width="51" height="801" source="Tira 12.png"/>
+ </tile>
+ <tile id="35">
+  <image width="51" height="801" source="Tira 13.png"/>
+ </tile>
+ <tile id="36">
+  <image width="51" height="801" source="Tira 14.png"/>
+ </tile>
+ <tile id="37">
+  <image width="51" height="801" source="Tira 15.png"/>
+ </tile>
+ <tile id="38">
+  <image width="51" height="801" source="Tira 16.png"/>
+ </tile>
+ <tile id="39">
+  <image width="51" height="801" source="Tira 17.png"/>
+ </tile>
+ <tile id="40">
+  <image width="51" height="801" source="Tira 18.png"/>
+ </tile>
+ <tile id="41">
+  <image width="51" height="801" source="Tira 19.png"/>
+ </tile>
+ <tile id="42">
+  <image width="51" height="801" source="Tira 20.png"/>
+ </tile>
+ <tile id="43">
+  <image width="51" height="801" source="Tira 21.png"/>
+ </tile>
+ <tile id="44">
+  <image width="51" height="801" source="Tira 22.png"/>
+ </tile>
+ <tile id="45">
+  <image width="51" height="801" source="Tira 23.png"/>
+ </tile>
+ <tile id="46">
+  <image width="51" height="801" source="Tira 24.png"/>
  </tile>
 </tileset>

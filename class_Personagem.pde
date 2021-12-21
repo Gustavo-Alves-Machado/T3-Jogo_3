@@ -14,8 +14,8 @@ class Personagem {
     t_e_mai_i = 'A';
     t_c_min_i = 'w';
     t_c_mai_i = 'W';
-    largura_i = 42;
-    altura_i = 60;
+    largura_i = 43;
+    altura_i = 78;
     px_i = 200;
     py_i = height/2;
     vx_i = 7;
@@ -24,6 +24,18 @@ class Personagem {
     desax_i = ax_i * 4;
     vy_i = 14;
     g_i = 0.5;
+    
+    //Carrega imagens
+     boneco_Esquerda_ = new PImage[numAnimacao];
+  for (int contador = 0; contador < numAnimacao; contador = contador + 1) {
+    String nomeArquivo = "Boneco_Esquerda_" + str(contador) + ".png"; 
+    boneco_Esquerda_[contador] = loadImage(nomeArquivo);
+  }
+  boneco_Direita_ = new PImage[numAnimacao];
+  for (int contador = 0; contador < numAnimacao; contador = contador + 1) {
+    String nomeArquivo = "Boneco_Direita_" + str(contador) + ".png"; 
+    boneco_Direita_[contador] = loadImage(nomeArquivo);
+  }
 
     // Inicializações executáveis
     t_d_min = t_d_min_i;
@@ -45,7 +57,7 @@ class Personagem {
     pode_pular = true;
 
     // Inicialização de sprites
-    sprite1 = loadImage ("SMWSmallMarioSprite.png");
+    sprite1 = loadImage ("Boneco_Direita_0.png");
   }
 
   // Verifica quando uma tecla está sendo pressionada
@@ -53,6 +65,7 @@ class Personagem {
     boolean pressionada = false;
     if (key == t_d_min) {
       pressionada = true;
+      sprite1 = boneco_Direita_[frameAtual];
     }
     return pressionada;
   }
@@ -60,6 +73,7 @@ class Personagem {
     boolean pressionada = false;
     if (key == t_e_min || key == t_e_mai) {
       pressionada = true;
+      sprite1 = boneco_Esquerda_[frameAtual];
     }
     return pressionada;
   }
