@@ -63,7 +63,7 @@ void draw(){
     tile_colisao_coordenadas = mapa.canvasToMap(round(jogador.px), round(jogador.py + jogador.altura/2)).array();
     switch(mapa.getTileIndex(0, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
       case 0: case 1:
-        jogador.colisao("vertical", (tile_tamanho [1] * tile_colisao_coordenadas [1]) - tile_tamanho[1]/8); // Não encontrei um py aqui que tornasse a colisão 100% estável
+        jogador.colisao("vertical", (tile_tamanho [1] * tile_colisao_coordenadas [1]) - tile_tamanho[1]/9); // Não encontrei um py aqui que tornasse a colisão 100% estável
         jogador.pode_pular = true;
         break;
       default:
@@ -97,6 +97,24 @@ void draw(){
     jogador.px += jogador.vx;
     jogador.py -= jogador.vy; // Aqui vy é subtraído para facilitar o raciocínio, porque o eixo y diminui para cima no Processing
 
+    // Colisão com plataforma à direita
+    tile_colisao_coordenadas = mapa.canvasToMap(round(jogador.px + jogador.largura/2), round(jogador.py)).array();
+    switch(mapa.getTileIndex(0, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
+      case 0: case 1:
+        jogador.colisao("horizontal", (tile_tamanho [0] * tile_colisao_coordenadas [0]) - 3);
+    }
+    // Colisão com plataforma à esquerda
+    tile_colisao_coordenadas = mapa.canvasToMap(round(jogador.px - jogador.largura/2), round(jogador.py)).array();
+    switch(mapa.getTileIndex(0, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
+      case 0: case 1:
+        jogador.colisao("horizontal", (tile_tamanho [0] * (tile_colisao_coordenadas [0] + 1)) + 3);
+    }
+    // Colisão com plataforma acima
+    tile_colisao_coordenadas = mapa.canvasToMap(round(jogador.px), round(jogador.py - jogador.altura/2)).array();
+    switch(mapa.getTileIndex(0, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
+      case 0: case 1:
+        jogador.colisao("vertical", (tile_tamanho [0] * (tile_colisao_coordenadas [0] + 1)) + 15);
+    }
     // Colisão com as extremidades superior e laterais da tela
     if (jogador.px >= width - jogador.largura/2) {
       jogador.colisao("horizontal", width - jogador.largura/2);

@@ -127,6 +127,7 @@ class Personagem {
   void colisao (String orientacao, float p) {
     if (orientacao == "horizontal") {
       px = p;
+      vx = 0;
     }
     if (orientacao == "vertical") {
       py = p;
