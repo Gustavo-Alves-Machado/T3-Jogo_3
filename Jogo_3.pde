@@ -17,7 +17,7 @@ Vitória Campos Moreira Tavares – 11761581
 import ptmx.*;
 Ptmx mapa;
 int tela, px_mapa, py_mapa;
-float [] tile_colisao_coordenadas, tile_tamanho, mapa_tamanho;
+float [] tile_colisao_coordenadas, mapa_tamanho;
 Personagem jogador;
 
 void setup() {
@@ -31,10 +31,9 @@ void setup() {
   mapa.setPositionMode ("CANVAS");
   px_mapa = int(width/2);
   py_mapa = int(height/2);
-  tile_tamanho = mapa.getTileSize().array();
   mapa_tamanho = mapa.getMapSize().array();
-  mapa_tamanho [0] *= tile_tamanho [0];
-  mapa_tamanho [1] *= tile_tamanho [1];
+  mapa_tamanho [0] *= mapa.getTileSize().x;
+  mapa_tamanho [1] *= mapa.getTileSize().y;
   imageMode(CENTER);
   }
 
@@ -63,10 +62,10 @@ void draw(){
   if (tela == 6){
     
     // Colisão com plataforma abaixo
-    tile_colisao_coordenadas = mapa.canvasToMap(round(jogador.px), round(jogador.py + jogador.altura/2)).array();
+    tile_colisao_coordenadas = mapa.canvasToMap(jogador.px, jogador.py + jogador.altura/2).array();
     switch(mapa.getTileIndex(0, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
       case 0: case 1:
-        jogador.colisao("vertical", (tile_tamanho [1] * tile_colisao_coordenadas [1]) - tile_tamanho[1]/9); // Não encontrei um py aqui que tornasse a colisão 100% estável
+        jogador.colisao("vertical", (mapa.getTileSize().y * round(tile_colisao_coordenadas [1])) - jogador.altura/2); // Não encontrei um py aqui que tornasse a colisão 100% estável
         jogador.pode_pular = true;
         break;
       default:
@@ -104,19 +103,19 @@ void draw(){
     tile_colisao_coordenadas = mapa.canvasToMap(round(jogador.px + jogador.largura/2), round(jogador.py)).array();
     switch(mapa.getTileIndex(0, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
       case 0: case 1:
-        jogador.colisao("horizontal", (tile_tamanho [0] * tile_colisao_coordenadas [0]) - 3);
+        jogador.colisao("horizontal", (mapa.getTileSize().x * round(tile_colisao_coordenadas[0])) - jogador.largura/2);
     }
     // Colisão com plataforma à esquerda
     tile_colisao_coordenadas = mapa.canvasToMap(round(jogador.px - jogador.largura/2), round(jogador.py)).array();
     switch(mapa.getTileIndex(0, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
       case 0: case 1:
-        jogador.colisao("horizontal", (tile_tamanho [0] * (tile_colisao_coordenadas [0] + 1)) + 3);
+        jogador.colisao("horizontal", (mapa.getTileSize().x * round(tile_colisao_coordenadas [0] + 1)) + jogador.largura/2);
     }
     // Colisão com plataforma acima
     tile_colisao_coordenadas = mapa.canvasToMap(round(jogador.px), round(jogador.py - jogador.altura/2)).array();
     switch(mapa.getTileIndex(0, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
       case 0: case 1:
-        jogador.colisao("vertical", (tile_tamanho [0] * (tile_colisao_coordenadas [0] + 1)) + 15);
+        jogador.colisao("vertical", (mapa.getTileSize().y * round(tile_colisao_coordenadas [1] + 1)) + jogador.altura/2);
     }
     // Colisão com as extremidades superior e laterais da tela
     if (jogador.px >= mapa_tamanho[0] - jogador.largura/2) {
@@ -131,16 +130,18 @@ void draw(){
 
     background (235);
     if (jogador.px <= width/2) {
+      mapa.draw (px_mapa, py_mapa);
       jogador.imagem("começo");
     }
     else if (jogador.px >= mapa_tamanho[0] - width/2) {
+      mapa.draw (px_mapa, py_mapa);
       image (jogador.sprite1, jogador.px - (mapa_tamanho[0] - width), jogador.py, jogador.largura, jogador.altura);
     }
     else {
-      jogador.imagem("meio");
       px_mapa = int (jogador.px);
+      mapa.draw (px_mapa, py_mapa);
+      jogador.imagem("meio");
     }
-    mapa.draw (px_mapa, py_mapa);
     
     // APAGAR - Mostra coordenadas do jogador na tela
     fill (0);
@@ -150,6 +151,15 @@ void draw(){
     text (int(tile_colisao_coordenadas[0]), 200, 50);
     text (int(tile_colisao_coordenadas[1]), 200, 85);
     text ("tipo de bloco: " + str(mapa.getTileIndex(0, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))), 100, 150);
+    textSize(8);
+    for(int nx = 0; nx < mapa.getMapSize().x; nx++) {
+      for(int ny = 0; ny < mapa.getMapSize().y; ny++) {
+        float px = mapa.mapToCam(nx, ny).x;
+        float py = mapa.mapToCam(nx, ny).y;
+        ellipse(px, py, 2, 2);
+        text(nx + "," + ny, px, py);
+      }
+    }
   }
   
   //--------------------------------GAME OVER-----------------------------------
