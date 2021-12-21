@@ -130,7 +130,7 @@ PImage[] boneco_Esquerda_, boneco_Direita_, Monstro_Esquerda_, Monstro_Direita_;
 
 void setup() {
   size(1200, 800);
-  tela = 6;
+  tela = 1;
   inGame = false;
   timerOn = false;
   delayBotao = 0;
@@ -142,7 +142,7 @@ void setup() {
   yMapa = 0;
  
   //configuração base do volume das músicas
-  volume = 0.5;
+  volume = 0.1;
   
   
   //Configurações base para funcionamento dos créditos
@@ -253,7 +253,7 @@ void draw() {
     imageMode(CORNER);
     image(BGMenu,0,0,width,height);
     imageMode(CENTER);
-    image(Logo,width/2-200,height/2,600,600);
+    image(Logo,width/2-250,height/2,566*1.3,284*1.3);
     
     //Configur~ção dos efeitos sonoros
     if (tela == 1 && estaTocandoMenu == false) {
@@ -300,10 +300,15 @@ void draw() {
           posicaoPontaSlider = mouseX;
         }
       }
+      if (posicaoSlider/300 > 0.01){
       volume = posicaoSlider/300;
+      } else {
+        volume = 0;
+      }
+      
       
     //Muda o ícone de volume caso o slider atinja 0
-    if(volume>0.015){
+    if(volume>0){
       image(VolumeON,  posicaoXSlider - 60, posicaoYSlider + AlturaSlider/2, 70, 70);
     } else {
       image(VolumeOFF, posicaoXSlider - 60, posicaoYSlider + AlturaSlider/2, 70, 70);
@@ -378,8 +383,7 @@ void draw() {
   //----------------------------------O JOGO-----------------------------------
   if (tela == 6) {
     inGame = true;
-    
-    background(map.getBackgroundColor());
+      
     map.draw(xMapa, yMapa);
     
     //Configur~ção dos efeitos sonoros
@@ -401,8 +405,10 @@ void draw() {
     if (timerOn == true){
       textAlign (CENTER,TOP);
       textSize (30);
-      fill(255);
-      text (str(timer), width-50,20);
+      fill(20,20,20);
+      rect(width-90,-30,120, 95, 20);
+      fill(255,220,220);
+      text (str(timer), width-45,15);
     }
     
     if (keyPressed == true){
