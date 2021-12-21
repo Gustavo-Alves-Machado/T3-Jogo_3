@@ -19,7 +19,6 @@ FAU USP – Design T15 – 2021
 import processing.sound.*;
 import ptmx.*;
 
-<<<<<<< HEAD
 SoundFile menuMusic;
 boolean estaTocandoMenu = false; //variável utilizada para evitar as repetições dos sons dentro do comando "draw"
 SoundFile jogoMusic;
@@ -234,30 +233,6 @@ void setup() {
   for (int contador = 0; contador < numAnimacao; contador = contador + 1) {
     String nomeArquivo = "Boneco_Direita_" + str(contador) + ".png"; 
     boneco_Direita_[contador] = loadImage(nomeArquivo);
-=======
-// --------------------------------------- NOME DO JOGUINHO ----------------------------------------
-import ptmx.*;
-Ptmx mapa;
-int tela, px_mapa, py_mapa;
-float [] tile_colisao_coordenadas, mapa_tamanho;
-Personagem jogador;
-
-void setup() {
-  size(1200,800);
-  tela = 6;
-  jogador = new Personagem ();
-
-  mapa = new Ptmx (this, "mapa_blocos.tmx");
-  mapa.setBackgroundMode("NONE");
-  mapa.setDrawMode (CENTER);
-  mapa.setPositionMode ("CANVAS");
-  px_mapa = int(width/2);
-  py_mapa = int(height/2);
-  mapa_tamanho = mapa.getMapSize().array();
-  mapa_tamanho [0] *= mapa.getTileSize().x;
-  mapa_tamanho [1] *= mapa.getTileSize().y;
-  imageMode(CENTER);
->>>>>>> 391f36990c3b62164a94de9308a6214c4b785b6d
   }
   
   Monstro_Direita_ = new PImage[numAnimacao];
@@ -409,7 +384,6 @@ void draw() {
   }
 
   //----------------------------------O JOGO-----------------------------------
-<<<<<<< HEAD
   if (tela == 6) {
     inGame = true;
       
@@ -430,110 +404,6 @@ void draw() {
       
     for (int i = 0; i < vida; i++)
     {image(cafevida,80 + i * 80, 80);}
-=======
-  if (tela == 6){
-    
-    // Colisão com plataforma abaixo
-    tile_colisao_coordenadas = mapa.canvasToMap(jogador.px, jogador.py + jogador.altura/2).array();
-    switch(mapa.getTileIndex(0, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
-      case 0: case 1:
-        jogador.colisao("vertical", (mapa.getTileSize().y * round(tile_colisao_coordenadas [1])) - jogador.altura/2); // Não encontrei um py aqui que tornasse a colisão 100% estável
-        jogador.pode_pular = true;
-        break;
-      default:
-        jogador.gravidade();
-        break;
-    }
-    // Colisão com o lado inferior da tela
-    if (jogador.py >= height - jogador.altura/2) {
-      jogador.colisao ("vertical", height - jogador.altura/2);
-      jogador.pode_pular = true;
-    }
-
-    if (keyPressed == true) {
-      if (jogador.direita()) {
-        jogador.moveDireita();
-      }
-      if (jogador.esquerda()) {
-        jogador.moveEsquerda();
-      }
-      if (jogador.cima()) {
-        jogador.pula();
-        jogador.pode_pular = false;
-      }
-    }
-    
-    if (keyPressed == false) {
-      jogador.freiaVx();
-    }
-
-    // Atualiza a posição do jogador
-    jogador.px += jogador.vx;
-    jogador.py -= jogador.vy; // Aqui vy é subtraído para facilitar o raciocínio, porque o eixo y diminui para cima no Processing
-
-    // Colisão com plataforma à direita
-    tile_colisao_coordenadas = mapa.canvasToMap(round(jogador.px + jogador.largura/2), round(jogador.py)).array();
-    switch(mapa.getTileIndex(0, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
-      case 0: case 1:
-        jogador.colisao("horizontal", (mapa.getTileSize().x * round(tile_colisao_coordenadas[0])) - jogador.largura/2);
-    }
-    // Colisão com plataforma à esquerda
-    tile_colisao_coordenadas = mapa.canvasToMap(round(jogador.px - jogador.largura/2), round(jogador.py)).array();
-    switch(mapa.getTileIndex(0, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
-      case 0: case 1:
-        jogador.colisao("horizontal", (mapa.getTileSize().x * round(tile_colisao_coordenadas [0] + 1)) + jogador.largura/2);
-    }
-    // Colisão com plataforma acima
-    tile_colisao_coordenadas = mapa.canvasToMap(round(jogador.px), round(jogador.py - jogador.altura/2)).array();
-    switch(mapa.getTileIndex(0, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
-      case 0: case 1:
-        jogador.colisao("vertical", (mapa.getTileSize().y * round(tile_colisao_coordenadas [1] + 1)) + jogador.altura/2);
-    }
-    // Colisão com as extremidades superior e laterais da tela
-    if (jogador.px >= mapa_tamanho[0] - jogador.largura/2) {
-      jogador.colisao("horizontal", mapa_tamanho[0] - jogador.largura/2);
-    }
-    if (jogador.px <= jogador.largura/2) {
-      jogador.colisao("horizontal", jogador.largura/2);
-    }
-    if (jogador.py <= jogador.altura/2) {
-      jogador.colisao("vertical", jogador.altura/2);
-    }
-
-    background (235);
-    if (jogador.px <= width/2) {
-      mapa.draw (px_mapa, py_mapa);
-      jogador.imagem("começo");
-    }
-    else if (jogador.px >= mapa_tamanho[0] - width/2) {
-      mapa.draw (px_mapa, py_mapa);
-      image (jogador.sprite1, jogador.px - (mapa_tamanho[0] - width), jogador.py, jogador.largura, jogador.altura);
-    }
-    else {
-      px_mapa = int (jogador.px);
-      mapa.draw (px_mapa, py_mapa);
-      jogador.imagem("meio");
-    }
-    
-    // APAGAR - Mostra coordenadas do jogador na tela
-    fill (0);
-    textSize (24);
-    text ("px = " + str(round(jogador.px)), 100, 50);
-    text ("py = " + str(round(jogador.py)), 100, 85);
-    text (int(tile_colisao_coordenadas[0]), 200, 50);
-    text (int(tile_colisao_coordenadas[1]), 200, 85);
-    text ("tipo de bloco: " + str(mapa.getTileIndex(0, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))), 100, 150);
-    textSize(8);
-    for(int nx = 0; nx < mapa.getMapSize().x; nx++) {
-      for(int ny = 0; ny < mapa.getMapSize().y; ny++) {
-        float px = mapa.mapToCam(nx, ny).x;
-        float py = mapa.mapToCam(nx, ny).y;
-        ellipse(px, py, 2, 2);
-        text(nx + "," + ny, px, py);
-      }
-    }
-  }
->>>>>>> 391f36990c3b62164a94de9308a6214c4b785b6d
   
     //Muda para a tela de Game Over quando acabam-se as vidas
     if(vida == 0){
