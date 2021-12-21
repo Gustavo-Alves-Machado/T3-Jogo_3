@@ -19,6 +19,7 @@ FAU USP – Design T15 – 2021
 import processing.sound.*;
 import ptmx.*;
 
+//Inicialização das músicas
 SoundFile menuMusic;
 boolean estaTocandoMenu = false; //variável utilizada para evitar as repetições dos sons dentro do comando "draw"
 SoundFile jogoMusic;
@@ -30,126 +31,32 @@ boolean estaTocandoGameover= false; //variável utilizada para evitar as repeti�
 SoundFile vitoriaMusic;
 boolean estaTocandoVitoria= false; //variável utilizada para evitar as repetições dos sons dentro do comando "draw"
 
+//Inicialização das variáveis
 float volume, timer, t_inicial, t_passado, t_menu, t_final,LarguraBotao, AlturaBotao, posicaoSlider, posicaoPontaSlider, tamanhoTecla;
+float [] tile_colisao_coordenadas, tile_tamanho, mapa_tamanho;
+
 boolean tocando, inGame, timerOn, ganhou_jogo;
+
 int tela, dificuldade, botoesDeDificuldadeSelecionados, delayBotao, distancia_nomes_creditos, posicaoY_creditos, vel_creditos, contador_creditos, parte_creditos, frameAtual;
-int LarguraSlider, AlturaSlider, posicaoYSlider, posicaoXSlider, numAnimacao, xMapa, yMapa;
+int LarguraSlider, AlturaSlider, posicaoYSlider, posicaoXSlider, numAnimacao, px_mapa, py_mapa, vida;
+
 PImage BotaoStart, BotaoInstrucoes, BotaoX, BotaoConfig, BotaoRetry, BotaoContinuar, BotaoMenu, BotaoTimer, BotaoCreditos, PontaSlider, PortraitSlider, VolumeON, VolumeOFF;
 PImage BotaoStartSelecionado, BotaoInstrucoesSelecionado, BotaoXSelecionado, BotaoConfigSelecionado, BotaoRetrySelecionado, BotaoContinuarSelecionado, BotaoMenuSelecionado, BotaoTimerSelecionado, BotaoCreditosSelecionado;
 PImage BGjogo, BGMenu, BGVitoria, Logo, TirinhaLore, TirinhaLoreFinal, TelaCompiuter, TeclaA, TeclaASelecionada, TeclaD, TeclaDSelecionada, TeclaW, TeclaWSelecionada; 
-PImage BGGameOver, GameOverFrase, TeclaA1, TeclaD1, TeclaW1, bicho, monstro;
+PImage BGGameOver, GameOverFrase, TeclaA1, TeclaD1, TeclaW1, bicho, monstro, Porta, Pilha_Papel;
 PImage[] boneco_Esquerda_, boneco_Direita_, Monstro_Esquerda_, Monstro_Direita_;
-PImage cafevida;
-int vida = 3;
 
 Ptmx mapa;
-int px_mapa, py_mapa;
-float [] tile_colisao_coordenadas, tile_tamanho, mapa_tamanho;
 Personagem jogador;
-
-
-  class Botao {
-    float largura, altura, posicaoX, posicaoY;
-    int telinha;
-    PImage naoSelecionado, Selecionado;
-   
-    Botao(PImage nselec, PImage selec, float x, float y, float larg, float alt) {
-      largura = larg;
-      altura = alt;
-      posicaoX = x;
-      posicaoY = y;
-      Selecionado = selec;
-      naoSelecionado = nselec;
-    }
-   
-    //Esse método é responsável por criar interação que faz o botão mudar a tela
-    void criarInteracaoTela(int telinha) {
-      imageMode (CENTER); 
-      image (naoSelecionado, posicaoX, posicaoY, largura, altura);
-        if (mouseX < posicaoX + largura/2 && mouseX > posicaoX - largura/2 && mouseY < posicaoY + altura/2 && mouseY > posicaoY - altura/2) {
-          image (Selecionado, posicaoX, posicaoY, largura, altura);
-          if (mousePressed == true && (mouseButton == LEFT)) { 
-            tela = telinha;
-            if( estaTocandoSelecao == false){
-            selecaoMusic.play();
-            jogoMusic.stop();
-            estaTocandoJogo = false ;
-            vitoriaMusic.stop();
-            estaTocandoVitoria = false;
-            gameoverMusic.stop();
-            estaTocandoGameover = false;}
-          }
-        }
-    }
-  
-    //Esse método é responsável por ligar e desligar o timer
-    void ligarTempo(){
-      //Faz com que haja um contador para a variável "delay", que evita com que o botão seja clicado 2 vezes instantaneamente
-      if(delayBotao > 0){
-        delayBotao  = delayBotao - 1;
-      }
-      
-      //Muda o ícone do timer a depender se ele foi selecionado ou não
-      if (timerOn == false){
-        image (naoSelecionado, posicaoX, posicaoY, largura, altura);
-        
-      
-      }
-      if (timerOn == true){
-        image (Selecionado, posicaoX, posicaoY, largura, altura);
-     
-      }
-      
-      if (mouseX < posicaoX + largura/2 && mouseX > posicaoX - largura/2 && mouseY < posicaoY + altura/2 && mouseY > posicaoY - altura/2) {
-        if (mousePressed == true && (mouseButton == LEFT)) {
-          
-         //Configuração dos efeitos sonoros
-         if( estaTocandoSelecao == false){
-         selecaoMusic.play();
-         jogoMusic.stop();
-         estaTocandoJogo = false ;
-         vitoriaMusic.stop();
-         estaTocandoVitoria = false;
-         gameoverMusic.stop();
-         estaTocandoGameover = false;}
-      
-          if (timerOn == false && delayBotao == 0){
-            timerOn = true;
-            delayBotao = 10;
-          }
-          if (timerOn == true && delayBotao == 0){
-            timerOn = false;
-            delayBotao = 10;
-          }
-        }
-      }
-    }
-    
-    //Método responsável por reiniciar o contador de tempo quando se clica em um botão
-    void MexerNoTempo(){
-      if (mouseX < posicaoX + largura/2 && mouseX > posicaoX - largura/2 && mouseY < posicaoY + altura/2 && mouseY > posicaoY - altura/2) {
-        if (mousePressed == true && (mouseButton == LEFT)) { 
-          t_inicial = millis();
-        }
-      }
-    }
-    
-    void reiniciarJogo(){
-    vida = 3;
-    jogador.px = jogador.px_i;
-    jogador.py = jogador.py_i;
-    px_mapa = width/2;
-    py_mapa = height/2;
-    t_menu = 0;
-    }
-  }
   
 void setup() {
   size(1200,800);
-  tela = 6;
+  tela = 1;
   jogador = new Personagem ();
   ganhou_jogo = false;
+  vida = 1;
 
+  //Configurações iniciais para funcionamento do mapa
   mapa = new Ptmx (this, "Escritório.tmx");
   mapa.setBackgroundMode("NONE");
   mapa.setDrawMode (CENTER);
@@ -160,6 +67,7 @@ void setup() {
   mapa_tamanho = mapa.getMapSize().array();
   mapa_tamanho [0] *= tile_tamanho [0];
   mapa_tamanho [1] *= tile_tamanho [1];
+  
   imageMode(CENTER);
 
   inGame = false;
@@ -178,7 +86,8 @@ void setup() {
   vel_creditos = 1;
   contador_creditos = 0;
   parte_creditos = 0;
-
+  
+  //Configurações iniciais os botões
   LarguraBotao = 914/3;
   AlturaBotao = 326/3;
   tamanhoTecla = 80;
@@ -238,14 +147,15 @@ void setup() {
   Logo = loadImage("Logo.png");
   TirinhaLore = loadImage("Lore.png");
   TirinhaLoreFinal = loadImage("Lore Final.png");
-  cafevida = loadImage ("cafe.png");
+  Porta = loadImage ("Tile 15 - Porta Final.png");
+  Pilha_Papel = loadImage ("Tile 6 - Pilha de Papel mortal.png");
   
   //Carregamento dos arquivos de som
-  menuMusic = new SoundFile(this, "musicamenu.mp3"); //carrega a trilha de audio de dentro da pasta "data"
-  jogoMusic = new SoundFile(this, "musicajogo.mp3"); //carrega a trilha de audio de dentro da pasta "data"
-  selecaoMusic = new SoundFile(this, "musicaselecao.mp3"); //carrega a trilha de audio de dentro da pasta "data"
-  gameoverMusic = new SoundFile(this, "musicagameover.mp3"); //carrega a trilha de audio de dentro da pasta "data"
-  vitoriaMusic = new SoundFile(this, "musicavitoria.mp3"); //carrega a trilha de audio de dentro da pasta "data"
+  menuMusic = new SoundFile(this, "musicamenu.mp3");
+  jogoMusic = new SoundFile(this, "musicajogo.mp3"); 
+  selecaoMusic = new SoundFile(this, "musicaselecao.mp3"); 
+  gameoverMusic = new SoundFile(this, "musicagameover.mp3");
+  vitoriaMusic = new SoundFile(this, "musicavitoria.mp3");
   
   //Carrega imagens individuais das animações do bicho Esquerda e Direita
   boneco_Esquerda_ = new PImage[numAnimacao];
@@ -258,14 +168,7 @@ void setup() {
     String nomeArquivo = "Boneco_Direita_" + str(contador) + ".png"; 
     boneco_Direita_[contador] = loadImage(nomeArquivo);
   }
-  
-  Monstro_Direita_ = new PImage[numAnimacao];
-  for (int contador = 0; contador < numAnimacao; contador = contador + 1) {
-    String nomeArquivo = "Monstro_Direita_" + str(contador) + ".png"; 
-    Monstro_Direita_[contador] = loadImage(nomeArquivo);
-  }
 }
-
 
 void draw() { 
   
@@ -295,7 +198,7 @@ void draw() {
       gameoverMusic.stop();
       estaTocandoGameover = false;}
       
-      //Configurações dos botões da tela
+    //Configurações dos botões da tela
     Botao botaoStart = new Botao(BotaoStart, BotaoStartSelecionado, width-260, 250, LarguraBotao, AlturaBotao);
     botaoStart.criarInteracaoTela(3);
 
@@ -326,6 +229,8 @@ void draw() {
           posicaoPontaSlider = mouseX;
         }
       }
+      
+      //Configura o volume a partir da posição do slider
       if (posicaoSlider/300 > 0.01){
       volume = posicaoSlider/300;
       } else {
@@ -371,17 +276,24 @@ void draw() {
     background(121,130,185);
     imageMode(CENTER);
     image(TelaCompiuter,width/2,height/2,1150*1.04,775*1.04);
+    
+    fill(255);
+    textSize(30);    
     image(TeclaA1,300,150,tamanhoTecla,tamanhoTecla);
     image(TeclaD1,400,150,tamanhoTecla,tamanhoTecla);
     image(TeclaW1,300,height/2-100,tamanhoTecla,tamanhoTecla);
-    image(bicho, 150, 150, 43*1.5, 79*1.5);
-    image(monstro, 150, 600);
-    fill(255);
-    textSize(120);
-    text ("Use as teclas A e D para se movimentar horizontalmente", width/2,posicaoY_creditos);
+    image(bicho, 150, 225, 43*1.5, 79*1.5);
+    text ("Use as teclas A e D para", 480, 140);
+    text ("se movimentar horizontalmente", 480, 180);
+    text ("Use a tecla W para pular", 380, height/2-90);
 
-    monstro = Monstro_Direita_[frameAtual];
-
+    image (Pilha_Papel, 150,455,100*1.25,50*1.25);
+    text ("Cuidado com as pilhas de papel!", 250, 440);
+    text ("Cair nelas dá um soninho...", 250, 480);
+    
+    image(Porta, 150,600,50*1.25,100*1.25); 
+    text ("Chegue na porta! É lá que o chefe está", 250, 610);
+    
     // Coloca a animação em loop e muda o frame atual a cada 5 contagens do frame rate
     if (frameCount % 4 == 0) frameAtual = frameAtual+1;
     if (frameAtual == numAnimacao) frameAtual=0;
@@ -389,6 +301,7 @@ void draw() {
     Botao botaoFecharInstrucoes = new Botao(BotaoX, BotaoXSelecionado, width-100, 100, 50, 50);
     botaoFecharInstrucoes.criarInteracaoTela(1);
     
+    //Faz com que alguns ícones sejam interativos
     if (keyPressed == true){
       if (key == 'A' | key == 'a'){
       TeclaA1 = TeclaASelecionada;
@@ -411,7 +324,7 @@ void draw() {
 
   //----------------------------------O JOGO-----------------------------------
   if (tela == 6) {
-    inGame = true;
+    inGame = true; //variável usada para coordenar algumas mudanças de tela
     
     //Configuração dos efeitos sonoros
     if (tela == 6 && estaTocandoJogo == false) {
@@ -428,20 +341,16 @@ void draw() {
       
       if (frameCount % 4 == 0) frameAtual = frameAtual+1;
     if (frameAtual == numAnimacao) frameAtual=0;
-    
-    for (int i = 0; i < vida; i++)
-    {image(cafevida,80 + i * 80, 80);}
   
     //Muda para a tela de Game Over quando acabam-se as vidas
     if(vida == 0){
     tela = 7;} 
     
+    //Mata o jogador quando ele cai do mapa
     if(jogador.py + jogador.altura/2>=height){
     vida = 0;}
-    
-    //if( Personagem bate em um ladrilho ruim){
-    //vida = vida - 1;}
-   
+     
+    //Conta o tempo passado desde que se iniciou o jogo de fato
     t_passado = int((millis() - t_inicial)/1000) - t_menu;
     timer = t_passado;
 
@@ -456,6 +365,7 @@ void draw() {
         jogador.gravidade();
         break;
     }
+   
     // Colisão com o lado inferior da tela
     if (jogador.py >= height - jogador.altura/2) {
       jogador.colisao ("vertical", height - jogador.altura/2);
@@ -511,7 +421,8 @@ void draw() {
     if (jogador.py <= jogador.altura/2) {
       jogador.colisao("vertical", jogador.altura/2);
     }
-
+     
+    //Colisão que garante a vitória quando se chega na porta
     tile_colisao_coordenadas = mapa.canvasToMap(round(jogador.px), round(jogador.py)).array();
     switch(mapa.getTileIndex(1, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
       case 16:
@@ -520,7 +431,7 @@ void draw() {
       t_final = timer;
     }
 
-    background (235);
+    //Faz o desenho do mapa e do personagem na tela, dependendo da posição no mapa
     if (jogador.px <= width/2) {
       mapa.draw (px_mapa, py_mapa);
       jogador.imagem("começo");
@@ -535,12 +446,14 @@ void draw() {
       jogador.imagem("meio");
     }
     
+    //Abre as configurações no meio do jogo
     if (keyPressed == true){
       if (key == 'T' | key == 't'){
         tela = 2; 
       }
     }
-
+    
+    //Código feito para fase de desenvolvimento, o qual exibia as coordenadas do jogador
     /*
     fill (0);
     textSize (24);
@@ -551,6 +464,7 @@ void draw() {
     text ("tipo de bloco: " + str(mapa.getTileIndex(0, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))), 100, 150);
     */
     
+    //Exibe o tempo decorrido na tela caso tenha sido ligado nomenu
     if (timerOn == true){
       textAlign (CENTER,TOP);
       textSize (30);
@@ -574,7 +488,7 @@ void draw() {
     imageMode (CENTER);
     image (GameOverFrase,width/2,height/2,780,290);
    
-    //Configur~ção dos efeitos sonoros
+    //Configuração dos efeitos sonoros
     if (tela == 7 && estaTocandoGameover == false) {
       gameoverMusic.loop();
       estaTocandoGameover = true;
@@ -626,10 +540,11 @@ void draw() {
     text ("Arthur Siviero - Mêcanicas do personagem, Colisões", width/2,posicaoY_creditos);
     text ("Everton Bela - Arte, Animações, Logo", width/2,posicaoY_creditos+distancia_nomes_creditos);
     text ("Gustavo Machado - Menus, Telas extras, Mapa", width/2,posicaoY_creditos+distancia_nomes_creditos*2);
-    text ("Vitoria Campos - Sistema de Morte,Arte, música", width/2,posicaoY_creditos+distancia_nomes_creditos*3);
+    text ("Vitoria Campos - Sistema de Morte, Arte, música", width/2,posicaoY_creditos+distancia_nomes_creditos*3);
     textSize (90);
     text ("MUITO OBRIGADO!", width/2,posicaoY_creditos+distancia_nomes_creditos*10.75);
     
+    //Faz com que apareça o tempo que você teve caso tenha ligado o timer no menu
     if (ganhou_jogo==true){
       if (timerOn == true){
     textSize (30);
@@ -671,7 +586,7 @@ void draw() {
     botaoContinuarParaJogo.reiniciarJogo();
     ganhou_jogo = true;
   
-      //Configuração dos efeitos sonoros
+    //Configuração dos efeitos sonoros
     if (tela == 9  && estaTocandoVitoria == false) {
       vitoriaMusic.loop();
       estaTocandoVitoria = true;
@@ -683,8 +598,8 @@ void draw() {
       estaTocandoMenu = false;
       gameoverMusic.stop();
       estaTocandoGameover = false;
+      }
+  }
 }
-  }
-  }
   
   

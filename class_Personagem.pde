@@ -25,17 +25,17 @@ class Personagem {
     vy_i = 14;
     g_i = 0.5;
     
-    //Carrega imagens
+    //Carrega imagens para animação do personagem
      boneco_Esquerda_ = new PImage[numAnimacao];
-  for (int contador = 0; contador < numAnimacao; contador = contador + 1) {
-    String nomeArquivo = "Boneco_Esquerda_" + str(contador) + ".png"; 
-    boneco_Esquerda_[contador] = loadImage(nomeArquivo);
-  }
-  boneco_Direita_ = new PImage[numAnimacao];
-  for (int contador = 0; contador < numAnimacao; contador = contador + 1) {
-    String nomeArquivo = "Boneco_Direita_" + str(contador) + ".png"; 
-    boneco_Direita_[contador] = loadImage(nomeArquivo);
-  }
+      for (int contador = 0; contador < numAnimacao; contador = contador + 1) {
+       String nomeArquivo = "Boneco_Esquerda_" + str(contador) + ".png"; 
+         boneco_Esquerda_[contador] = loadImage(nomeArquivo);
+        }
+     boneco_Direita_ = new PImage[numAnimacao];
+       for (int contador = 0; contador < numAnimacao; contador = contador + 1) {
+         String nomeArquivo = "Boneco_Direita_" + str(contador) + ".png"; 
+         boneco_Direita_[contador] = loadImage(nomeArquivo);
+       }
 
     // Inicializações executáveis
     t_d_min = t_d_min_i;
@@ -63,7 +63,7 @@ class Personagem {
   // Verifica quando uma tecla está sendo pressionada
   boolean direita () {
     boolean pressionada = false;
-    if (key == t_d_min) {
+    if (key == t_d_min || key == t_d_mai) {
       pressionada = true;
       sprite1 = boneco_Direita_[frameAtual];
     }
