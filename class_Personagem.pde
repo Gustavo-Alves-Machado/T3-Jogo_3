@@ -16,7 +16,7 @@ class Personagem {
     t_c_mai_i = 'W';
     largura_i = 42;
     altura_i = 60;
-    px_i = width/2;
+    px_i = 200;
     py_i = height/2;
     vx_i = 7;
     ax_i = 0.6;
@@ -136,8 +136,13 @@ class Personagem {
   }
 
   // Desenha o personagem na tela
-  void imagem () {
+  void imagem (String modo) {
     imageMode (CENTER);
-    image (sprite1, px, py, largura, altura);
+    if (modo == "começo") {
+      image (sprite1, px, py, largura, altura);
+    }
+    if (modo == "meio") {
+      image (sprite1, width/2, py, largura, altura);
+    }
   }
 }

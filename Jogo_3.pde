@@ -17,11 +17,11 @@ Vitória Campos Moreira Tavares – 11761581
 import ptmx.*;
 Ptmx mapa;
 int tela, px_mapa, py_mapa;
-float [] tile_colisao_coordenadas, tile_tamanho;
+float [] tile_colisao_coordenadas, tile_tamanho, mapa_tamanho;
 Personagem jogador;
 
 void setup() {
-  size(800,800);
+  size(1200,800);
   tela = 6;
   jogador = new Personagem ();
 
@@ -32,6 +32,9 @@ void setup() {
   px_mapa = int(width/2);
   py_mapa = int(height/2);
   tile_tamanho = mapa.getTileSize().array();
+  mapa_tamanho = mapa.getMapSize().array();
+  mapa_tamanho [0] *= tile_tamanho [0];
+  mapa_tamanho [1] *= tile_tamanho [1];
   imageMode(CENTER);
   }
 
@@ -116,8 +119,8 @@ void draw(){
         jogador.colisao("vertical", (tile_tamanho [0] * (tile_colisao_coordenadas [0] + 1)) + 15);
     }
     // Colisão com as extremidades superior e laterais da tela
-    if (jogador.px >= width - jogador.largura/2) {
-      jogador.colisao("horizontal", width - jogador.largura/2);
+    if (jogador.px >= mapa_tamanho[0] - jogador.largura/2) {
+      jogador.colisao("horizontal", mapa_tamanho[0] - jogador.largura/2);
     }
     if (jogador.px <= jogador.largura/2) {
       jogador.colisao("horizontal", jogador.largura/2);
@@ -127,8 +130,18 @@ void draw(){
     }
 
     background (235);
+    if (jogador.px <= width/2) {
+      jogador.imagem("começo");
+    }
+    else if (jogador.px >= mapa_tamanho[0] - width/2) {
+      image (jogador.sprite1, jogador.px - (mapa_tamanho[0] - width), jogador.py, jogador.largura, jogador.altura);
+    }
+    else {
+      jogador.imagem("meio");
+      px_mapa = int (jogador.px);
+    }
     mapa.draw (px_mapa, py_mapa);
-    jogador.imagem();
+    
     // APAGAR - Mostra coordenadas do jogador na tela
     fill (0);
     textSize (24);
