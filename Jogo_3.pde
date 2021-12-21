@@ -137,7 +137,7 @@ Personagem jogador;
   
 void setup() {
   size(1200,800);
-  tela = 1;
+  tela = 6;
   jogador = new Personagem ();
 
   mapa = new Ptmx (this, "Escritório.tmx");
@@ -442,10 +442,10 @@ void draw() {
       text (str(timer), width-45,15);
     }
 
-// Colisão com plataforma abaixo
+    // Colisão com plataforma abaixo
     tile_colisao_coordenadas = mapa.canvasToMap(round(jogador.px), round(jogador.py + jogador.altura/2)).array();
     switch(mapa.getTileIndex(0, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
-      case 0: case 1:
+      case 0: case 1: case 2: case 17:
         jogador.colisao("vertical", (tile_tamanho [1] * tile_colisao_coordenadas [1]) - tile_tamanho[1]/9); // Não encontrei um py aqui que tornasse a colisão 100% estável
         jogador.pode_pular = true;
         break;
@@ -457,7 +457,29 @@ void draw() {
     if (jogador.py >= height - jogador.altura/2) {
       jogador.colisao ("vertical", height - jogador.altura/2);
       jogador.pode_pular = true;
-    }  
+    }
+
+    if (keyPressed == true) {
+      if (jogador.direita()) {
+        jogador.moveDireita();
+      }
+      if (jogador.esquerda()) {
+        jogador.moveEsquerda();
+      }
+      if (jogador.cima()) {
+        jogador.pula();
+        jogador.pode_pular = false;
+      }
+    }
+    
+    if (keyPressed == false) {
+      jogador.freiaVx();
+    }
+
+    // Atualiza a posição do jogador
+    jogador.px += jogador.vx;
+    jogador.py -= jogador.vy; // Aqui vy é subtraído para facilitar o raciocínio, porque o eixo y diminui para cima no Processing
+
     // Colisão com plataforma à direita
     tile_colisao_coordenadas = mapa.canvasToMap(round(jogador.px + jogador.largura/2), round(jogador.py)).array();
     switch(mapa.getTileIndex(0, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
@@ -489,16 +511,18 @@ void draw() {
 
     background (235);
     if (jogador.px <= width/2) {
+      mapa.draw (px_mapa, py_mapa);
       jogador.imagem("começo");
     }
     else if (jogador.px >= mapa_tamanho[0] - width/2) {
+      mapa.draw (px_mapa, py_mapa);
       image (jogador.sprite1, jogador.px - (mapa_tamanho[0] - width), jogador.py, jogador.largura, jogador.altura);
     }
     else {
-      jogador.imagem("meio");
       px_mapa = int (jogador.px);
+      mapa.draw (px_mapa, py_mapa);
+      jogador.imagem("meio");
     }
-    mapa.draw (px_mapa, py_mapa);
     
     if (keyPressed == true){
       if (key == 'T'){
