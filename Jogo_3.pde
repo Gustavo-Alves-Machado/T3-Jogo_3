@@ -14,13 +14,25 @@ Vitória Campos Moreira Tavares – 11761581
 */
 
 // --------------------------------------- NOME DO JOGUINHO ----------------------------------------
-int tela;
+import ptmx.*;
+Ptmx mapa;
+int tela, px_mapa, py_mapa;
+float [] tile_colisao_coordenadas, tile_tamanho;
 Personagem jogador;
 
 void setup() {
   size(800,800);
   tela = 6;
   jogador = new Personagem ();
+
+  mapa = new Ptmx (this, "mapa_blocos.tmx");
+  mapa.setBackgroundMode("NONE");
+  mapa.setDrawMode (CENTER);
+  mapa.setPositionMode ("CANVAS");
+  px_mapa = int(width/2);
+  py_mapa = int(height/2);
+  tile_tamanho = mapa.getTileSize().array();
+  imageMode(CENTER);
   }
 
 void draw(){ 
@@ -46,12 +58,21 @@ void draw(){
   
   //----------------------------------O JOGO-----------------------------------
   if (tela == 6){
-
-    jogador.gravidade();
     
-    // Impede o jogador de sair do lado inferior da tela
+    // Colisão com plataforma abaixo
+    tile_colisao_coordenadas = mapa.canvasToMap(round(jogador.px), round(jogador.py + jogador.altura/2)).array();
+    switch(mapa.getTileIndex(0, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
+      case 0: case 1:
+        jogador.colisao("vertical", (tile_tamanho [1] * tile_colisao_coordenadas [1]) - tile_tamanho[1]/8); // Não encontrei um py aqui que tornasse a colisão 100% estável
+        jogador.pode_pular = true;
+        break;
+      default:
+        jogador.gravidade();
+        break;
+    }
+    // Colisão com o lado inferior da tela
     if (jogador.py >= height - jogador.altura/2) {
-      jogador.colisao ("lado inferior", height - jogador.altura/2);
+      jogador.colisao ("vertical", height - jogador.altura/2);
       jogador.pode_pular = true;
     }
 
@@ -72,23 +93,32 @@ void draw(){
       jogador.freiaVx();
     }
 
-  // Atualiza a posição do jogador
+    // Atualiza a posição do jogador
     jogador.px += jogador.vx;
     jogador.py -= jogador.vy; // Aqui vy é subtraído para facilitar o raciocínio, porque o eixo y diminui para cima no Processing
 
-    // Impede o jogador de sair dos outros lados da tela
+    // Colisão com as extremidades superior e laterais da tela
     if (jogador.px >= width - jogador.largura/2) {
-      jogador.colisao("lado direito", width - jogador.largura/2);
+      jogador.colisao("horizontal", width - jogador.largura/2);
     }
     if (jogador.px <= jogador.largura/2) {
-      jogador.colisao("lado esquerdo", jogador.largura/2);
+      jogador.colisao("horizontal", jogador.largura/2);
     }
     if (jogador.py <= jogador.altura/2) {
-      jogador.colisao("lado superior", jogador.altura/2);
+      jogador.colisao("vertical", jogador.altura/2);
     }
 
     background (235);
+    mapa.draw (px_mapa, py_mapa);
     jogador.imagem();
+    // APAGAR - Mostra coordenadas do jogador na tela
+    fill (0);
+    textSize (24);
+    text ("px = " + str(round(jogador.px)), 100, 50);
+    text ("py = " + str(round(jogador.py)), 100, 85);
+    text (int(tile_colisao_coordenadas[0]), 200, 50);
+    text (int(tile_colisao_coordenadas[1]), 200, 85);
+    text ("tipo de bloco: " + str(mapa.getTileIndex(0, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))), 100, 150);
   }
   
   //--------------------------------GAME OVER-----------------------------------

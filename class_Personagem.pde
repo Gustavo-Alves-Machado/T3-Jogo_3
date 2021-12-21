@@ -124,12 +124,11 @@ class Personagem {
     vy -= g;
   }
   
-  // Impede o personagem de sair das extremidades da tela.
-  void colisao (String lado, float p) {
-    if (lado == "lado direito" || lado == "lado esquerdo") {
+  void colisao (String orientacao, float p) {
+    if (orientacao == "horizontal") {
       px = p;
     }
-    if (lado == "lado superior" || lado == "lado inferior") {
+    if (orientacao == "vertical") {
       py = p;
       vy = 0;
     }
