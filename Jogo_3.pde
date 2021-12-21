@@ -424,28 +424,19 @@ void draw() {
     if(vida == 0){
     tela = 7;} 
     
-    if(jogador.py + jogador.altura/2>=height){
-    vida = 0;}
+    //if(jogador.py + jogador.altura/2>=height){
+    //vida = 0;}
     
     //if( Personagem bate em um ladrilho ruim){
     //vida = vida - 1;}
    
     t_passado = int((millis() - t_inicial)/1000) - t_menu;
     timer = t_passado;
-    
-    if (timerOn == true){
-      textAlign (CENTER,TOP);
-      textSize (30);
-      fill(20,20,20);
-      rect(width-90,-30,120, 95, 20);
-      fill(255,220,220);
-      text (str(timer), width-45,15);
-    }
 
     // Colisão com plataforma abaixo
     tile_colisao_coordenadas = mapa.canvasToMap(round(jogador.px), round(jogador.py + jogador.altura/2)).array();
-    switch(mapa.getTileIndex(0, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
-      case 0: case 1: case 2: case 17:
+    switch(mapa.getTileIndex(1, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
+      case 0: case 1: case 2: case 17: case 18: case 19: case 20: case 21: case 22:
         jogador.colisao("vertical", (tile_tamanho [1] * tile_colisao_coordenadas [1]) - tile_tamanho[1]/9); // Não encontrei um py aqui que tornasse a colisão 100% estável
         jogador.pode_pular = true;
         break;
@@ -482,21 +473,21 @@ void draw() {
 
     // Colisão com plataforma à direita
     tile_colisao_coordenadas = mapa.canvasToMap(round(jogador.px + jogador.largura/2), round(jogador.py)).array();
-    switch(mapa.getTileIndex(0, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
-      case 0: case 1:
-        jogador.colisao("horizontal", (tile_tamanho [0] * tile_colisao_coordenadas [0]) - 3);
+    switch(mapa.getTileIndex(1, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
+       case 0: case 1: case 2: case 17: case 18: case 19: case 20: case 21: case 22:
+        jogador.colisao("horizontal", (tile_tamanho [0] * tile_colisao_coordenadas [0]) - jogador.largura/2);
     }
     // Colisão com plataforma à esquerda
     tile_colisao_coordenadas = mapa.canvasToMap(round(jogador.px - jogador.largura/2), round(jogador.py)).array();
-    switch(mapa.getTileIndex(0, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
-      case 0: case 1:
-        jogador.colisao("horizontal", (tile_tamanho [0] * (tile_colisao_coordenadas [0] + 1)) + 3);
+    switch(mapa.getTileIndex(1, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
+       case 0: case 1: case 2: case 17: case 18: case 19: case 20: case 21: case 22:
+        jogador.colisao("horizontal", (tile_tamanho [0] * (tile_colisao_coordenadas [0] + 1)) + jogador.largura/2);
     }
     // Colisão com plataforma acima
     tile_colisao_coordenadas = mapa.canvasToMap(round(jogador.px), round(jogador.py - jogador.altura/2)).array();
-    switch(mapa.getTileIndex(0, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
-      case 0: case 1:
-        jogador.colisao("vertical", (tile_tamanho [0] * (tile_colisao_coordenadas [0] + 1)) + 15);
+    switch(mapa.getTileIndex(1, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))) {
+       case 0: case 1: case 2: case 17: case 18: case 19: case 20: case 21: case 22:
+        jogador.colisao("vertical", (tile_tamanho [0] * (tile_colisao_coordenadas [0] + 1)) + jogador.altura/2);
     }
     // Colisão com as extremidades superior e laterais da tela
     if (jogador.px >= mapa_tamanho[0] - jogador.largura/2) {
@@ -525,7 +516,7 @@ void draw() {
     }
     
     if (keyPressed == true){
-      if (key == 'T'){
+      if (key == 'T' | key == 't'){
         tela = 2; 
       }
     }
@@ -538,7 +529,15 @@ void draw() {
     text (int(tile_colisao_coordenadas[0]), 200, 50);
     text (int(tile_colisao_coordenadas[1]), 200, 85);
     text ("tipo de bloco: " + str(mapa.getTileIndex(0, round(tile_colisao_coordenadas [0]), round(tile_colisao_coordenadas [1]))), 100, 150);
-
+    
+    if (timerOn == true){
+      textAlign (CENTER,TOP);
+      textSize (30);
+      fill(20,20,20);
+      rect(width-90,-30,120, 95, 20);
+      fill(255,220,220);
+      text (str(timer), width-45,15);
+    }
   }
 
   //--------------------------------GAME OVER-----------------------------------

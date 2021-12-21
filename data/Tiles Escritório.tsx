@@ -1,5 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
-<tileset version="1.5" tiledversion="1.7.2" name="Tiles Escritório" tilewidth="1200" tileheight="804" tilecount="18" columns="0">
+<tileset version="1.5" tiledversion="1.7.2" name="Tiles Escritório" tilewidth="1200" tileheight="804" tilecount="23" columns="0">
  <grid orientation="orthogonal" width="1" height="1"/>
  <tile id="0">
   <image width="101" height="151" source="Tile 1 - Armário 100 x 150.png"/>
@@ -54,5 +54,20 @@
  </tile>
  <tile id="17">
   <image width="50" height="50" source="Tile.png"/>
+ </tile>
+ <tile id="18">
+  <image width="51" height="51" source="Tile 16 - Metade Mesa Esquerda.png"/>
+ </tile>
+ <tile id="19">
+  <image width="51" height="51" source="Tile 17 - Metade Mesa Direita.png"/>
+ </tile>
+ <tile id="20">
+  <image width="51" height="51" source="Tile 18 - Metade Prateleira Esquerda.png"/>
+ </tile>
+ <tile id="21">
+  <image width="51" height="51" source="Tile 19 - Metade Prateleira Direita.png"/>
+ </tile>
+ <tile id="22">
+  <image width="51" height="51" source="Tile 20 - Pontinha armário.png"/>
  </tile>
 </tileset>
