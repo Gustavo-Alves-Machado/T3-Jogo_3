@@ -137,7 +137,7 @@ Personagem jogador;
   
 void setup() {
   size(1200,800);
-  tela = 6;
+  tela = 4;
   jogador = new Personagem ();
   ganhou_jogo = false;
 
@@ -358,7 +358,7 @@ void draw() {
   }
 
   //-------------------------------INSTRUÇÕES-----------------------------------
-  if (tela == 4) {
+  if (tela == 6) {
     background(121,130,185);
     imageMode(CENTER);
     image(TelaCompiuter,width/2,height/2,1150*1.04,775*1.04);
@@ -367,6 +367,9 @@ void draw() {
     image(TeclaW1,300,height/2-100,tamanhoTecla,tamanhoTecla);
     image(bicho, 150, 150, 43*1.5, 79*1.5);
     image(monstro, 150, 600);
+    fill(255);
+    textSize(120);
+    text ("Use as teclas A e D para se movimentar horizontalmente", width/2,posicaoY_creditos);
 
     monstro = Monstro_Direita_[frameAtual];
 
